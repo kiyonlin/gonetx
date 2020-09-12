@@ -28,7 +28,6 @@ type options struct {
 	netmask         byte
 	markmask        uint32
 	listSize        uint
-	newName         string
 }
 
 func (o *options) apply(opts ...Option) *options {
@@ -328,12 +327,5 @@ func Markmask(markmask uint32) Option {
 func ListSize(listSize uint) Option {
 	return func(opt *options) {
 		opt.listSize = listSize
-	}
-}
-
-// NewName option is for rename command.
-func NewName(newName string) Option {
-	return func(opt *options) {
-		opt.newName = newName
 	}
 }
