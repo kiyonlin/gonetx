@@ -95,37 +95,27 @@ func (s set) Name() string {
 }
 
 func (s set) Rename(newName string) error {
-	return s.doEntry(_rename, newName)
+	return s.do(_rename, newName)
 }
 
 func (s set) Add(entry string, options ...Option) error {
-	return s.doEntry(_add, entry, options...)
+	return s.do(_add, entry, options...)
 }
 
 func (s set) Del(entry string, options ...Option) error {
-	return s.doEntry(_del, entry, options...)
+	return s.do(_del, entry, options...)
 }
 
 func (s set) Test(entry string, options ...Option) error {
-	return s.doEntry(_test, entry, options...)
+	return s.do(_test, entry, options...)
 }
 
 func (s set) Destroy() error {
-	return s.do(_destroy)
+	return s.do(_destroy, "")
 }
 
-func (s set) doEntry(action, entry string, options ...Option) error {
+func (s set) do(action, entry string, options ...Option) error {
 	c := getCmd(action, s.name, s.setType, entry)
-	defer putCmd(c)
-
-	if err := c.exec(options...); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (s set) do(action string, options ...Option) error {
-	c := getCmd(action, s.name, s.setType)
 	defer putCmd(c)
 
 	if err := c.exec(options...); err != nil {
