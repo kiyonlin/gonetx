@@ -43,6 +43,7 @@ const (
 	_netmask  = "netmask"
 	_markmask = "markmask"
 	_size     = "size"
+	_range    = "range"
 )
 
 type cmd struct {
@@ -142,6 +143,14 @@ func (c *cmd) appendArgs(args []string, opts ...Option) []string {
 		args = append(args, _size, i2str(uint64(o.listSize)))
 	}
 
+	if o.ipRange != "" && c.needIpRange() {
+		args = append(args, _range, o.ipRange)
+	}
+
+	if o.portRange != "" && c.needPortRange() {
+		args = append(args, _range, o.portRange)
+	}
+
 	return args
 }
 
@@ -219,6 +228,15 @@ func (c *cmd) needMarkmask() bool {
 
 func (c *cmd) needListSize() bool {
 	return c.action == _create && c.setType == ListSet
+}
+
+func (c *cmd) needIpRange() bool {
+	return c.action == _create &&
+		(c.setType == BitmapIp || c.setType == BitmapIpMac)
+}
+
+func (c *cmd) needPortRange() bool {
+	return c.action == _create && c.setType == BitmapPort
 }
 
 var cmdPool = sync.Pool{

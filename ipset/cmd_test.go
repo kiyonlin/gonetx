@@ -437,6 +437,56 @@ func Test_Options_Netmask(t *testing.T) {
 	}
 }
 
+func Test_Options_IpRange(t *testing.T) {
+	for _, action := range testActions {
+		for _, setType := range testSetTypes {
+			c := getFakeCmd(action, setType)
+			t.Run(action+" "+string(setType)+" without ip range", func(t *testing.T) {
+				args := c.appendArgs(nil, IpRange(""))
+				assert.Len(t, args, 0)
+			})
+
+			if c.needIpRange() {
+				t.Run(action+" "+string(setType)+" need ip range", func(t *testing.T) {
+					args := c.appendArgs(nil, IpRange("1.1.1.1/24"))
+					assert.Equal(t, _range, args[0])
+					assert.Equal(t, "1.1.1.1/24", args[1])
+				})
+			} else {
+				t.Run(action+" "+string(setType)+" ignore ip range", func(t *testing.T) {
+					args := c.appendArgs(nil, IpRange("1.1.1.1/24"))
+					assert.Len(t, args, 0)
+				})
+			}
+		}
+	}
+}
+
+func Test_Options_PortRange(t *testing.T) {
+	for _, action := range testActions {
+		for _, setType := range testSetTypes {
+			c := getFakeCmd(action, setType)
+			t.Run(action+" "+string(setType)+" without port range", func(t *testing.T) {
+				args := c.appendArgs(nil, PortRange(""))
+				assert.Len(t, args, 0)
+			})
+
+			if c.needPortRange() {
+				t.Run(action+" "+string(setType)+" need port range", func(t *testing.T) {
+					args := c.appendArgs(nil, PortRange("1000-2000"))
+					assert.Equal(t, _range, args[0])
+					assert.Equal(t, "1000-2000", args[1])
+				})
+			} else {
+				t.Run(action+" "+string(setType)+" ignore port range", func(t *testing.T) {
+					args := c.appendArgs(nil, PortRange("1000-2000"))
+					assert.Len(t, args, 0)
+				})
+			}
+		}
+	}
+}
+
 func Test_Options_ListSize(t *testing.T) {
 	for _, action := range testActions {
 		for _, setType := range testSetTypes {
