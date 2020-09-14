@@ -40,6 +40,7 @@ const (
 	_family   = "family"
 	_hashsize = "hashsize"
 	_maxelem  = "maxelem"
+	_netmask  = "netmask"
 )
 
 type cmd struct {
@@ -127,6 +128,10 @@ func (c *cmd) appendArgs(args []string, opts ...Option) []string {
 		args = append(args, _maxelem, i2str(int64(o.maxElem)))
 	}
 
+	if o.netmask != 0 && c.needNetmask() {
+		args = append(args, _netmask, i2str(int64(o.netmask)))
+	}
+
 	return args
 }
 
@@ -191,6 +196,11 @@ func (c *cmd) needFamily() bool {
 
 func (c *cmd) needHash() bool {
 	return c.action == _create && strings.HasPrefix(string(c.setType), "hash")
+}
+
+func (c *cmd) needNetmask() bool {
+	return c.action == _create &&
+		(c.setType == BitmapIp || c.setType == HashIp)
 }
 
 var cmdPool = sync.Pool{

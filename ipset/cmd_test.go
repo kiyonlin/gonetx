@@ -412,6 +412,31 @@ func Test_Options_MaxElem(t *testing.T) {
 	}
 }
 
+func Test_Options_Netmask(t *testing.T) {
+	for _, action := range testActions {
+		for _, setType := range testSetTypes {
+			c := getFakeCmd(action, setType)
+			t.Run(action+" "+string(setType)+" without netmask", func(t *testing.T) {
+				args := c.appendArgs(nil, Netmask(0))
+				assert.Len(t, args, 0)
+			})
+
+			if c.needNetmask() {
+				t.Run(action+" "+string(setType)+" need netmask", func(t *testing.T) {
+					args := c.appendArgs(nil, Netmask(1))
+					assert.Equal(t, _netmask, args[0])
+					assert.Equal(t, "1", args[1])
+				})
+			} else {
+				t.Run(action+" "+string(setType)+" ignore netmask", func(t *testing.T) {
+					args := c.appendArgs(nil, Netmask(1))
+					assert.Len(t, args, 0)
+				})
+			}
+		}
+	}
+}
+
 func getFakeCmd(action string, setType ...SetType) *cmd {
 	st := HashIp
 	if len(setType) > 0 {
