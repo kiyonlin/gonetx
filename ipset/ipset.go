@@ -73,6 +73,9 @@ type IPSet interface {
 	// if it is missing from the set.
 	Test(entry string, options ...Option) error
 
+	// Flush flushed all entries from the the set.
+	Flush() error
+
 	// Destroy removes the set from kernel.
 	Destroy() error
 

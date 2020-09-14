@@ -188,6 +188,28 @@ func Test_Set_Test(t *testing.T) {
 	})
 }
 
+func Test_Set_Flush(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		setupCmd()
+		defer teardownCmd()
+		s := getSet()
+
+		assert.Nil(t, s.Flush())
+	})
+
+	t.Run("error", func(t *testing.T) {
+		setupCmd(flag)
+		defer teardownCmd()
+		s := getSet()
+
+		err := s.Flush()
+		require.Error(t, err)
+		assert.Equal(t,
+			fmt.Sprintf("ipset: can't flush set %s: fake error", s.name),
+			err.Error())
+	})
+}
+
 func Test_Set_Destroy(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		setupCmd()
