@@ -252,7 +252,7 @@ const (
 	//      ipset test foo 01:02:03:04:05:06
 	HashMac SetType = "hash:mac"
 
-	// Hash:IpMac set type uses a hash to store IP and a MAC
+	// HashIpMac set type uses a hash to store IP and a MAC
 	// address pairs. Zero valued MAC addresses cannot be stored
 	// in a Hash:IpMac type of set. For matches on destination
 	// MAC addresses, see COMMENTS below.

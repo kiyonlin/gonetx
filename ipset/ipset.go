@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/*
-	Package ipset is a library providing a wrapper to the iptables ipset user space utility
-*/
+// Package ipset is a library providing a wrapper to the iptables
+// ipset user space utility.
 package ipset
 
 import (
@@ -30,8 +29,10 @@ const (
 )
 
 var (
-	ipsetPath              string
-	ErrNotFound            = errors.New("ipset utility not found")
+	ipsetPath string
+	// ErrNotFound is returned if there is no ipset found in os path
+	ErrNotFound = errors.New("ipset utility not found")
+	// ErrVersionNotSupported is returned if ipset's version is not bigger than v6.0
 	ErrVersionNotSupported = errors.New("ipset utility version is not supported, requiring version >= 6.0")
 )
 
@@ -234,12 +235,14 @@ func Check() error {
 //
 
 func isSupported() (bool, error) {
-	if out, err := execCommand(ipsetPath, _version).
-		CombinedOutput(); err != nil {
-		return false, err
-	} else {
+	out, err := execCommand(ipsetPath, _version).
+		CombinedOutput()
+
+	if err == nil {
 		return getMajorVersion(out) >= minMajorVersion, nil
 	}
+
+	return false, err
 }
 
 func getMajorVersion(version []byte) int {

@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// Option is for ipset commands
 type Option func(opt *options)
 
 type options struct {
@@ -261,7 +262,7 @@ func HashSize(hashSize uint) Option {
 	}
 }
 
-// MaxElement option is valid for the create command of all
+// MaxElem option is valid for the create command of all
 // hash type sets. It does define the maximal number of
 // elements which can be stored in the set, default 65536.
 // Example:
@@ -273,10 +274,13 @@ func MaxElem(maxElem uint) Option {
 	}
 }
 
+// NetFamily defines the protocol family of the IP addresses
 type NetFamily string
 
 const (
-	Inet  NetFamily = "inet"
+	// Inet indicates IPv4
+	Inet NetFamily = "inet"
+	// Inet6 indicates IPv6
 	Inet6 NetFamily = "inet6"
 )
 
