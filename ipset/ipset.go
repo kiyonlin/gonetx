@@ -67,10 +67,8 @@ type IPSet interface {
 	// expired), then the command ignores the error.
 	Del(entry string, options ...Option) error
 
-	// Test tests whether an entry is in a set or not. Exit status
-	// number is zero if the tested entry is in the set and nonzero
-	// if it is missing from the set.
-	Test(entry string, options ...Option) error
+	// Test tests whether an entry is in a set or not.
+	Test(entry string) (bool, error)
 
 	// Flush flushed all entries from the the set.
 	Flush() error

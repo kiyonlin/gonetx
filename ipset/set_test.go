@@ -166,8 +166,19 @@ func Test_Set_Test(t *testing.T) {
 		defer teardownCmd()
 		s := getSet()
 
-		err := s.Test(ip)
+		ok, err := s.Test(ip)
 		require.Nil(t, err)
+		assert.True(t, ok)
+	})
+
+	t.Run("not exist", func(t *testing.T) {
+		setupCmd()
+		defer teardownCmd()
+		s := getSet()
+
+		ok, err := s.Test(testNotExistIp)
+		assert.Nil(t, err)
+		assert.False(t, ok)
 	})
 
 	t.Run("error", func(t *testing.T) {
@@ -175,13 +186,13 @@ func Test_Set_Test(t *testing.T) {
 		defer teardownCmd()
 		s := getSet()
 
-		err := s.Test(ip)
+		ok, err := s.Test(ip)
 		require.Error(t, err)
+		assert.False(t, ok)
 
 		assert.Equal(t,
 			fmt.Sprintf("ipset: can't %s %s %s: fake error", _test, s.name, ip),
 			err.Error())
-
 	})
 }
 

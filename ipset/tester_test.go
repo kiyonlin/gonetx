@@ -66,6 +66,11 @@ func TestHelperProcess(t *testing.T) {
 			} else {
 				_, _ = fmt.Fprintf(os.Stdout, saveInfo)
 			}
+		case _test:
+			if len(args) > 3 && args[3] == testNotExistIp {
+				_, _ = fmt.Fprintf(os.Stderr, "1.1.1.2 is NOT in set foo.")
+				os.Exit(1)
+			}
 		}
 	}
 
@@ -147,4 +152,5 @@ add foo 1.1.1.1
 create foo hash:ip family inet hashsize 1024 maxelem 65536
 add foo one.one.one.one
 `
+	testNotExistIp = "1.1.1.2"
 )

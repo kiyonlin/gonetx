@@ -106,8 +106,20 @@ func (s set) Del(entry string, options ...Option) error {
 	return s.do(_del, entry, options...)
 }
 
-func (s set) Test(entry string, options ...Option) error {
-	return s.do(_test, entry, options...)
+var notFlag = []byte("NOT")
+
+func (s set) Test(entry string) (bool, error) {
+	out, err := execCommand(ipsetPath, _test, s.name, entry).
+		CombinedOutput()
+
+	if err != nil {
+		if bytes.Contains(out, notFlag) {
+			return false, nil
+		}
+		return false, fmt.Errorf("ipset: can't test %s %s: %s", s.name, entry, out)
+	}
+
+	return true, nil
 }
 
 func (s set) Flush() error {
