@@ -317,18 +317,18 @@ func Test_Options_Nomatch(t *testing.T) {
 	for _, action := range testActions {
 		for _, setType := range testSetTypes {
 			c := getFakeCmd(action, setType)
-			t.Run(action+" without nomatch", func(t *testing.T) {
+			t.Run(action+" "+string(setType)+" without nomatch", func(t *testing.T) {
 				args := c.appendArgs(nil, Nomatch(false))
 				assert.Len(t, args, 0)
 			})
 
 			if c.needNomatch() {
-				t.Run(action+" need nomatch", func(t *testing.T) {
+				t.Run(action+" "+string(setType)+" need nomatch", func(t *testing.T) {
 					args := c.appendArgs(nil, Nomatch(true))
 					assert.Equal(t, _nomatch, args[0])
 				})
 			} else {
-				t.Run(action+" ignore nomatch", func(t *testing.T) {
+				t.Run(action+" "+string(setType)+" ignore nomatch", func(t *testing.T) {
 					args := c.appendArgs(nil, Nomatch(true))
 					assert.Len(t, args, 0)
 				})
@@ -341,20 +341,45 @@ func Test_Options_Family(t *testing.T) {
 	for _, action := range testActions {
 		for _, setType := range testSetTypes {
 			c := getFakeCmd(action, setType)
-			t.Run(action+" without family", func(t *testing.T) {
+			t.Run(action+" "+string(setType)+" without family", func(t *testing.T) {
 				args := c.appendArgs(nil, Family(""))
 				assert.Len(t, args, 0)
 			})
 
 			if c.needFamily() {
-				t.Run(action+" need family", func(t *testing.T) {
+				t.Run(action+" "+string(setType)+" need family", func(t *testing.T) {
 					args := c.appendArgs(nil, Family("inet"))
 					assert.Equal(t, _family, args[0])
 					assert.Equal(t, "inet", args[1])
 				})
 			} else {
-				t.Run(action+" ignore family", func(t *testing.T) {
+				t.Run(action+" "+string(setType)+" ignore family", func(t *testing.T) {
 					args := c.appendArgs(nil, Family("inet"))
+					assert.Len(t, args, 0)
+				})
+			}
+		}
+	}
+}
+
+func Test_Options_HashSize(t *testing.T) {
+	for _, action := range testActions {
+		for _, setType := range testSetTypes {
+			c := getFakeCmd(action, setType)
+			t.Run(action+" "+string(setType)+" without hashsize", func(t *testing.T) {
+				args := c.appendArgs(nil, HashSize(0))
+				assert.Len(t, args, 0)
+			})
+
+			if c.needHashSize() {
+				t.Run(action+" "+string(setType)+" need hashsize", func(t *testing.T) {
+					args := c.appendArgs(nil, HashSize(1))
+					assert.Equal(t, _hashsize, args[0])
+					assert.Equal(t, "1", args[1])
+				})
+			} else {
+				t.Run(action+" "+string(setType)+" ignore hashsize", func(t *testing.T) {
+					args := c.appendArgs(nil, HashSize(1))
 					assert.Len(t, args, 0)
 				})
 			}
