@@ -37,6 +37,7 @@ const (
 	_skbprio  = "skbprio"
 	_skbqueue = "skbqueue"
 	_nomatch  = "nomatch"
+	_forceadd = "forceadd"
 	_family   = "family"
 	_hashsize = "hashsize"
 	_maxelem  = "maxelem"
@@ -117,6 +118,10 @@ func (c *cmd) appendArgs(args []string, opts ...Option) []string {
 
 	if o.nomatch && c.needNomatch() {
 		args = append(args, _nomatch)
+	}
+
+	if o.forceadd && c.onlyCreate() {
+		args = append(args, _forceadd)
 	}
 
 	if o.family != "" && c.needFamily() {

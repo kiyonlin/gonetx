@@ -337,6 +337,28 @@ func Test_Options_Nomatch(t *testing.T) {
 	}
 }
 
+func Test_Options_Forceadd(t *testing.T) {
+	for _, action := range testActions {
+		c := getFakeCmd(action)
+		t.Run(action+" without forceadd", func(t *testing.T) {
+			args := c.appendArgs(nil, Forceadd(false))
+			assert.Len(t, args, 0)
+		})
+
+		if c.onlyCreate() {
+			t.Run(action+" need forceadd", func(t *testing.T) {
+				args := c.appendArgs(nil, Forceadd(true))
+				assert.Equal(t, _forceadd, args[0])
+			})
+		} else {
+			t.Run(action+" ignore forceadd", func(t *testing.T) {
+				args := c.appendArgs(nil, Forceadd(true))
+				assert.Len(t, args, 0)
+			})
+		}
+	}
+}
+
 func Test_Options_Family(t *testing.T) {
 	for _, action := range testActions {
 		for _, setType := range testSetTypes {
