@@ -43,6 +43,8 @@ var (
 )
 
 func Test_Options_Exist(t *testing.T) {
+	t.Parallel()
+
 	for _, action := range testActions {
 		c := getFakeCmd(action)
 		t.Run(action+" without exist", func(t *testing.T) {
@@ -65,6 +67,8 @@ func Test_Options_Exist(t *testing.T) {
 }
 
 func Test_Options_Resolve(t *testing.T) {
+	t.Parallel()
+
 	for _, action := range testActions {
 		c := getFakeCmd(action)
 		t.Run(action+" without resolve", func(t *testing.T) {
@@ -87,6 +91,8 @@ func Test_Options_Resolve(t *testing.T) {
 }
 
 func Test_Options_Timeout(t *testing.T) {
+	t.Parallel()
+
 	for _, action := range testActions {
 		c := getFakeCmd(action)
 		t.Run(action+" without timeout", func(t *testing.T) {
@@ -110,6 +116,8 @@ func Test_Options_Timeout(t *testing.T) {
 }
 
 func Test_Options_Counters(t *testing.T) {
+	t.Parallel()
+
 	for _, action := range testActions {
 		c := getFakeCmd(action)
 		t.Run(action+" without counters", func(t *testing.T) {
@@ -132,6 +140,8 @@ func Test_Options_Counters(t *testing.T) {
 }
 
 func Test_Options_Packets(t *testing.T) {
+	t.Parallel()
+
 	for _, action := range testActions {
 		c := getFakeCmd(action)
 		t.Run(action+" without packets", func(t *testing.T) {
@@ -155,6 +165,8 @@ func Test_Options_Packets(t *testing.T) {
 }
 
 func Test_Options_Bytes(t *testing.T) {
+	t.Parallel()
+
 	for _, action := range testActions {
 		c := getFakeCmd(action)
 		t.Run(action+" without bytes", func(t *testing.T) {
@@ -178,6 +190,8 @@ func Test_Options_Bytes(t *testing.T) {
 }
 
 func Test_Options_Comment(t *testing.T) {
+	t.Parallel()
+
 	for _, action := range testActions {
 		c := getFakeCmd(action)
 		t.Run(action+" without comment", func(t *testing.T) {
@@ -200,6 +214,8 @@ func Test_Options_Comment(t *testing.T) {
 }
 
 func Test_Options_CommentContent(t *testing.T) {
+	t.Parallel()
+
 	for _, action := range testActions {
 		c := getFakeCmd(action)
 		t.Run(action+" without comment content", func(t *testing.T) {
@@ -223,6 +239,8 @@ func Test_Options_CommentContent(t *testing.T) {
 }
 
 func Test_Options_Skbinfo(t *testing.T) {
+	t.Parallel()
+
 	for _, action := range testActions {
 		c := getFakeCmd(action)
 		t.Run(action+" without skbinfo", func(t *testing.T) {
@@ -245,6 +263,8 @@ func Test_Options_Skbinfo(t *testing.T) {
 }
 
 func Test_Options_Skbmark(t *testing.T) {
+	t.Parallel()
+
 	for _, action := range testActions {
 		c := getFakeCmd(action)
 		t.Run(action+" without skbmark", func(t *testing.T) {
@@ -268,6 +288,8 @@ func Test_Options_Skbmark(t *testing.T) {
 }
 
 func Test_Options_Skbprio(t *testing.T) {
+	t.Parallel()
+
 	for _, action := range testActions {
 		c := getFakeCmd(action)
 		t.Run(action+" without skbprio", func(t *testing.T) {
@@ -291,6 +313,8 @@ func Test_Options_Skbprio(t *testing.T) {
 }
 
 func Test_Options_Skbqueue(t *testing.T) {
+	t.Parallel()
+
 	for _, action := range testActions {
 		c := getFakeCmd(action)
 		t.Run(action+" without skbqueue", func(t *testing.T) {
@@ -314,6 +338,8 @@ func Test_Options_Skbqueue(t *testing.T) {
 }
 
 func Test_Options_Nomatch(t *testing.T) {
+	t.Parallel()
+
 	for _, action := range testActions {
 		for _, setType := range testSetTypes {
 			c := getFakeCmd(action, setType)
@@ -338,6 +364,8 @@ func Test_Options_Nomatch(t *testing.T) {
 }
 
 func Test_Options_Forceadd(t *testing.T) {
+	t.Parallel()
+
 	for _, action := range testActions {
 		c := getFakeCmd(action)
 		t.Run(action+" without forceadd", func(t *testing.T) {
@@ -360,6 +388,8 @@ func Test_Options_Forceadd(t *testing.T) {
 }
 
 func Test_Options_Family(t *testing.T) {
+	t.Parallel()
+
 	for _, action := range testActions {
 		for _, setType := range testSetTypes {
 			c := getFakeCmd(action, setType)
@@ -385,6 +415,8 @@ func Test_Options_Family(t *testing.T) {
 }
 
 func Test_Options_HashSize(t *testing.T) {
+	t.Parallel()
+
 	for _, action := range testActions {
 		for _, setType := range testSetTypes {
 			c := getFakeCmd(action, setType)
@@ -410,6 +442,8 @@ func Test_Options_HashSize(t *testing.T) {
 }
 
 func Test_Options_MaxElem(t *testing.T) {
+	t.Parallel()
+
 	for _, action := range testActions {
 		for _, setType := range testSetTypes {
 			c := getFakeCmd(action, setType)
@@ -435,6 +469,8 @@ func Test_Options_MaxElem(t *testing.T) {
 }
 
 func Test_Options_Netmask(t *testing.T) {
+	t.Parallel()
+
 	for _, action := range testActions {
 		for _, setType := range testSetTypes {
 			c := getFakeCmd(action, setType)
@@ -460,6 +496,8 @@ func Test_Options_Netmask(t *testing.T) {
 }
 
 func Test_Options_Markmask(t *testing.T) {
+	t.Parallel()
+
 	for _, action := range testActions {
 		for _, setType := range testSetTypes {
 			c := getFakeCmd(action, setType)
@@ -485,6 +523,8 @@ func Test_Options_Markmask(t *testing.T) {
 }
 
 func Test_Options_IpRange(t *testing.T) {
+	t.Parallel()
+
 	for _, action := range testActions {
 		for _, setType := range testSetTypes {
 			c := getFakeCmd(action, setType)
@@ -510,6 +550,8 @@ func Test_Options_IpRange(t *testing.T) {
 }
 
 func Test_Options_PortRange(t *testing.T) {
+	t.Parallel()
+
 	for _, action := range testActions {
 		for _, setType := range testSetTypes {
 			c := getFakeCmd(action, setType)
@@ -535,6 +577,8 @@ func Test_Options_PortRange(t *testing.T) {
 }
 
 func Test_Options_ListSize(t *testing.T) {
+	t.Parallel()
+
 	for _, action := range testActions {
 		for _, setType := range testSetTypes {
 			c := getFakeCmd(action, setType)

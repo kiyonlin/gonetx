@@ -51,6 +51,8 @@ func Test_Check(t *testing.T) {
 }
 
 func Test_GetMajorVersion(t *testing.T) {
+	t.Parallel()
+
 	tt := []struct {
 		out []byte
 		v   int
