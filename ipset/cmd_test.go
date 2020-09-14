@@ -437,6 +437,31 @@ func Test_Options_Netmask(t *testing.T) {
 	}
 }
 
+func Test_Options_Markmask(t *testing.T) {
+	for _, action := range testActions {
+		for _, setType := range testSetTypes {
+			c := getFakeCmd(action, setType)
+			t.Run(action+" "+string(setType)+" without markmask", func(t *testing.T) {
+				args := c.appendArgs(nil, Markmask(0))
+				assert.Len(t, args, 0)
+			})
+
+			if c.needMarkmask() {
+				t.Run(action+" "+string(setType)+" need markmask", func(t *testing.T) {
+					args := c.appendArgs(nil, Markmask(1))
+					assert.Equal(t, _markmask, args[0])
+					assert.Equal(t, "1", args[1])
+				})
+			} else {
+				t.Run(action+" "+string(setType)+" ignore markmask", func(t *testing.T) {
+					args := c.appendArgs(nil, Markmask(1))
+					assert.Len(t, args, 0)
+				})
+			}
+		}
+	}
+}
+
 func Test_Options_IpRange(t *testing.T) {
 	for _, action := range testActions {
 		for _, setType := range testSetTypes {
