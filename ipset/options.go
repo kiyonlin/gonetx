@@ -8,9 +8,9 @@ import (
 type Option func(opt *options)
 
 type options struct {
-	timeout         time.Duration
 	exist           bool
 	resolve         bool
+	timeout         time.Duration
 	counters        bool
 	countersPackets uint
 	countersBytes   uint
@@ -25,6 +25,8 @@ type options struct {
 	family          NetFamily
 	nomatch         bool
 	forceadd        bool
+	ipRange         string
+	portRange       string
 	netmask         byte
 	markmask        uint32
 	listSize        uint
@@ -352,5 +354,23 @@ func Markmask(markmask uint32) Option {
 func ListSize(listSize uint) Option {
 	return func(opt *options) {
 		opt.listSize = listSize
+	}
+}
+
+// IpRange option should be used with BitmapIp and BitmapIpMac set
+// type. Creating the set from the specified inclusive address
+// range expressed in an IPv4 address range or network. The size
+// of the range cannot exceed the limit of maximum 65536 entries.
+func IpRange(ipRange string) Option {
+	return func(opt *options) {
+		opt.ipRange = ipRange
+	}
+}
+
+// PortRange option should be used with BitmapPort set type.
+// Creating the set from the specified inclusive port range.
+func PortRange(portRange string) Option {
+	return func(opt *options) {
+		opt.portRange = portRange
 	}
 }

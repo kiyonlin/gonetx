@@ -24,9 +24,9 @@ const (
 
 // Options
 const (
-	_timeout  = "timeout"
 	_exist    = "-exist"
 	_resolve  = "-resolve"
+	_timeout  = "timeout"
 	_counters = "counters"
 	_packets  = "packets"
 	_bytes    = "bytes"

@@ -23,29 +23,6 @@ var (
 	}
 )
 
-func Test_Options_Timeout(t *testing.T) {
-	for _, action := range testActions {
-		c := getFakeCmd(action)
-		t.Run(action+" without timeout", func(t *testing.T) {
-			args := c.appendArgs(nil, Timeout(0))
-			assert.Len(t, args, 0)
-		})
-
-		if c.needTimeout() {
-			t.Run(action+" need timeout", func(t *testing.T) {
-				args := c.appendArgs(nil, Timeout(time.Second))
-				assert.Equal(t, _timeout, args[0])
-				assert.Equal(t, "1", args[1])
-			})
-		} else {
-			t.Run(action+" ignore timeout", func(t *testing.T) {
-				args := c.appendArgs(nil, Timeout(time.Second))
-				assert.Len(t, args, 0)
-			})
-		}
-	}
-}
-
 func Test_Options_Exist(t *testing.T) {
 	for _, action := range testActions {
 		c := getFakeCmd(action)
@@ -84,6 +61,29 @@ func Test_Options_Resolve(t *testing.T) {
 		} else {
 			t.Run(action+" ignore resolve", func(t *testing.T) {
 				args := c.appendArgs(nil, Resolve(true))
+				assert.Len(t, args, 0)
+			})
+		}
+	}
+}
+
+func Test_Options_Timeout(t *testing.T) {
+	for _, action := range testActions {
+		c := getFakeCmd(action)
+		t.Run(action+" without timeout", func(t *testing.T) {
+			args := c.appendArgs(nil, Timeout(0))
+			assert.Len(t, args, 0)
+		})
+
+		if c.needTimeout() {
+			t.Run(action+" need timeout", func(t *testing.T) {
+				args := c.appendArgs(nil, Timeout(time.Second))
+				assert.Equal(t, _timeout, args[0])
+				assert.Equal(t, "1", args[1])
+			})
+		} else {
+			t.Run(action+" ignore timeout", func(t *testing.T) {
+				args := c.appendArgs(nil, Timeout(time.Second))
 				assert.Len(t, args, 0)
 			})
 		}
