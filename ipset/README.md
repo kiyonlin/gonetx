@@ -1,23 +1,13 @@
 # gonetx/ipset
+This package is a almost whole `Golang` wrapper to the `ipset` user space utility. It allows `Golang` programs to easily manipulate `ipset`.
 
-This package is a simple GoLang wrapper to the IPtables ipset user space utility.
-It provides an interface to allow Go programs to easily manipulate ipset.
-It is currently limited to sets of `type hash`.
-
-For ipset command documentation: http://ipset.netfilter.org/ipset.man.html
-
-ipset requires ipset kernel module and user space utility version 6.0 or greater.
+Visit [http://ipset.netfilter.org/ipset.man.html](http://ipset.netfilter.org/ipset.man.html) for more `ipset` command details. And `ipset` requires version `v6.0+`.
 
 ## Installation
-
-Install go-ipset using the "go get" command:
-
-    go get github.com/janeczku/go-ipset/ipset
-
-Install dependencies:
-
-    go get github.com/Sirupsen/logrus
-    go get github.com/coreos/go-semver/semver
+Install `ipset` using the `go get` command:
+```bash
+go get -u github.com/kiyonlin/gonetx/ipset
+```
 
 ## API Reference ##
 
@@ -26,65 +16,15 @@ Install dependencies:
 ## Usage ##
 
 ```go
-import "github.com/janeczku/go-ipset/ipset
+import "github.com/kiyonlin/gonetx/ipset
 ```
 
-#### Create a new set
+### Check ipset
 
-Construct a new IPset instance (creating the set on the fly), then use the various methods to manipulate the IPset.
-For example, to create a new ipset "customers" of type `hash:ip` for storing plain IPv4 addresses:
+### Create a new set
 
-```go
-customers := ipset.New("customers", "hash:ip", &ipset.Params{})
-```
+### Add a single entry to the set
 
-To create a new ipset to store different sized IPv4 network addresses (with /mask).
+### Delete a single entry from the set
 
-```go
-trustedNetworks := ipset.New("trusted-networks", "hash:net", &ipset.Params{})
-```
-
-#### Add a single entry to the set
-
-```go
-customers.Add("8.8.2.2")
-```
-
-#### Populate the set with IPv4 addresses (overwriting the previous content)
-
-```go
-ips := []string{"8.8.8.8", "8.8.4.4"}
-customers.Refresh(ips)
-```
-
-#### Remove a single entry from that set:
-
-```go
-customers.Del("8.8.8.8")
-```
-
-#### Configure advanced set options
-
-You can configure advanced options when creating a new set by supplying the parameters in the `ipset.Params` struct.
-
-```go
-type Params struct {
-  HashFamily string
-  HashSize   int
-  MaxElem    int
-  Timeout    int
-}
-```
-See http://ipset.netfilter.org/ipset.man.html for their meaning.
-
-For example, to create a set whose entries will expire after 60 seconds, lets say for temporarily limiting abusive clients:
-
-```go
-abusers := ipset.New("ratelimited", "hash:ip", &ipset.Params{Timeout: 60})
-```
-
-#### List entries of a set
-```go
-// list is []string
-list ipset.List("customers")
-```
+### List entries of a set
