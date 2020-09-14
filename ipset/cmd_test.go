@@ -21,6 +21,25 @@ var (
 		_rename,
 		_swap,
 	}
+
+	testSetTypes = []SetType{
+		BitmapIp,
+		BitmapIpMac,
+		BitmapPort,
+		HashIp,
+		HashMac,
+		HashIpMac,
+		HashNet,
+		HashNetNet,
+		HashIpPort,
+		HashNetPort,
+		HashIpPortIp,
+		HashIpPortNet,
+		HashIpMark,
+		HashNetPortNet,
+		HashNetIface,
+		ListSet,
+	}
 )
 
 func Test_Options_Exist(t *testing.T) {
@@ -296,22 +315,49 @@ func Test_Options_Skbqueue(t *testing.T) {
 
 func Test_Options_Nomatch(t *testing.T) {
 	for _, action := range testActions {
-		c := getFakeCmd(action)
-		t.Run(action+" without nomatch", func(t *testing.T) {
-			args := c.appendArgs(nil, Nomatch(false))
-			assert.Len(t, args, 0)
-		})
-
-		if c.needNomatch() {
-			t.Run(action+" need nomatch", func(t *testing.T) {
-				args := c.appendArgs(nil, Nomatch(true))
-				assert.Equal(t, _nomatch, args[0])
-			})
-		} else {
-			t.Run(action+" ignore nomatch", func(t *testing.T) {
-				args := c.appendArgs(nil, Nomatch(true))
+		for _, setType := range testSetTypes {
+			c := getFakeCmd(action, setType)
+			t.Run(action+" without nomatch", func(t *testing.T) {
+				args := c.appendArgs(nil, Nomatch(false))
 				assert.Len(t, args, 0)
 			})
+
+			if c.needNomatch() {
+				t.Run(action+" need nomatch", func(t *testing.T) {
+					args := c.appendArgs(nil, Nomatch(true))
+					assert.Equal(t, _nomatch, args[0])
+				})
+			} else {
+				t.Run(action+" ignore nomatch", func(t *testing.T) {
+					args := c.appendArgs(nil, Nomatch(true))
+					assert.Len(t, args, 0)
+				})
+			}
+		}
+	}
+}
+
+func Test_Options_Family(t *testing.T) {
+	for _, action := range testActions {
+		for _, setType := range testSetTypes {
+			c := getFakeCmd(action, setType)
+			t.Run(action+" without family", func(t *testing.T) {
+				args := c.appendArgs(nil, Family(""))
+				assert.Len(t, args, 0)
+			})
+
+			if c.needFamily() {
+				t.Run(action+" need family", func(t *testing.T) {
+					args := c.appendArgs(nil, Family("inet"))
+					assert.Equal(t, _family, args[0])
+					assert.Equal(t, "inet", args[1])
+				})
+			} else {
+				t.Run(action+" ignore family", func(t *testing.T) {
+					args := c.appendArgs(nil, Family("inet"))
+					assert.Len(t, args, 0)
+				})
+			}
 		}
 	}
 }

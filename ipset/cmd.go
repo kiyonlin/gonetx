@@ -3,6 +3,7 @@ package ipset
 import (
 	"fmt"
 	"strconv"
+	"strings"
 	"sync"
 )
 
@@ -36,6 +37,7 @@ const (
 	_skbprio  = "skbprio"
 	_skbqueue = "skbqueue"
 	_nomatch  = "nomatch"
+	_family   = "family"
 )
 
 type cmd struct {
@@ -111,6 +113,10 @@ func (c *cmd) appendArgs(args []string, opts ...Option) []string {
 		args = append(args, _nomatch)
 	}
 
+	if o.family != "" && c.needFamily() {
+		args = append(args, _family, string(o.family))
+	}
+
 	return args
 }
 
@@ -167,6 +173,10 @@ func (c *cmd) needNomatch() bool {
 		(c.setType == HashNet || c.setType == HashNetNet ||
 			c.setType == HashNetPort || c.setType == HashIpPortNet ||
 			c.setType == HashNetPortNet || c.setType == HashNetIface)
+}
+
+func (c *cmd) needFamily() bool {
+	return c.action == _create && c.setType != HashMac && strings.HasPrefix(string(c.setType), "hash")
 }
 
 var cmdPool = sync.Pool{
