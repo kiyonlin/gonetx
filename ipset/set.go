@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -219,7 +220,7 @@ func (s set) restore(b []byte) (err error) {
 
 func (s set) RestoreFromFile(filename string) (err error) {
 	var f *os.File
-	f, err = os.Open(filename)
+	f, err = os.Open(filepath.Clean(filename))
 	if err != nil {
 		return
 	}
