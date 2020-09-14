@@ -19,7 +19,7 @@ type options struct {
 	skbinfo         bool
 	skbmark         string
 	skbprio         string
-	skbqueue        float32
+	skbqueue        int
 	hashSize        uint
 	maxElem         uint
 	family          NetFamily
@@ -240,7 +240,7 @@ func Skbprio(skbprio string) Option {
 
 // Skbqueue option should be used with Skbinfo extension.
 // It is just decimal number.
-func Skbqueue(skbqueue float32) Option {
+func Skbqueue(skbqueue int) Option {
 	return func(opt *options) {
 		opt.skbqueue = skbqueue
 	}

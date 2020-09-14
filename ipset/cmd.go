@@ -32,6 +32,9 @@ const (
 	_bytes    = "bytes"
 	_comment  = "comment"
 	_skbinfo  = "skbinfo"
+	_skbmark  = "skbmark"
+	_skbprio  = "skbprio"
+	_skbqueue = "skbqueue"
 )
 
 type cmd struct {
@@ -89,6 +92,18 @@ func (c *cmd) appendArgs(args []string, opts ...Option) []string {
 
 	if o.skbinfo && c.onlyCreate() {
 		args = append(args, _skbinfo)
+	}
+
+	if o.skbmark != "" && c.onlyAdd() {
+		args = append(args, _skbmark, o.skbmark)
+	}
+
+	if o.skbprio != "" && c.onlyAdd() {
+		args = append(args, _skbprio, o.skbprio)
+	}
+
+	if o.skbqueue != 0 && c.onlyAdd() {
+		args = append(args, _skbqueue, i2str(int64(o.skbqueue)))
 	}
 
 	return args

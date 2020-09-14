@@ -225,6 +225,75 @@ func Test_Options_Skbinfo(t *testing.T) {
 	}
 }
 
+func Test_Options_Skbmark(t *testing.T) {
+	for _, action := range testActions {
+		c := getFakeCmd(action)
+		t.Run(action+" without skbmark", func(t *testing.T) {
+			args := c.appendArgs(nil, Skbmark(""))
+			assert.Len(t, args, 0)
+		})
+
+		if c.onlyAdd() {
+			t.Run(action+" need skbmark", func(t *testing.T) {
+				args := c.appendArgs(nil, Skbmark("skbmark"))
+				assert.Equal(t, _skbmark, args[0])
+				assert.Equal(t, "skbmark", args[1])
+			})
+		} else {
+			t.Run(action+" ignore skbmark", func(t *testing.T) {
+				args := c.appendArgs(nil, Skbmark("skbmark"))
+				assert.Len(t, args, 0)
+			})
+		}
+	}
+}
+
+func Test_Options_Skbprio(t *testing.T) {
+	for _, action := range testActions {
+		c := getFakeCmd(action)
+		t.Run(action+" without skbprio", func(t *testing.T) {
+			args := c.appendArgs(nil, Skbprio(""))
+			assert.Len(t, args, 0)
+		})
+
+		if c.onlyAdd() {
+			t.Run(action+" need skbprio", func(t *testing.T) {
+				args := c.appendArgs(nil, Skbprio("skbprio"))
+				assert.Equal(t, _skbprio, args[0])
+				assert.Equal(t, "skbprio", args[1])
+			})
+		} else {
+			t.Run(action+" ignore skbprio", func(t *testing.T) {
+				args := c.appendArgs(nil, Skbprio("skbprio"))
+				assert.Len(t, args, 0)
+			})
+		}
+	}
+}
+
+func Test_Options_Skbqueue(t *testing.T) {
+	for _, action := range testActions {
+		c := getFakeCmd(action)
+		t.Run(action+" without skbqueue", func(t *testing.T) {
+			args := c.appendArgs(nil, Skbqueue(0))
+			assert.Len(t, args, 0)
+		})
+
+		if c.onlyAdd() {
+			t.Run(action+" need skbqueue", func(t *testing.T) {
+				args := c.appendArgs(nil, Skbqueue(1))
+				assert.Equal(t, _skbqueue, args[0])
+				assert.Equal(t, "1", args[1])
+			})
+		} else {
+			t.Run(action+" ignore skbqueue", func(t *testing.T) {
+				args := c.appendArgs(nil, Skbqueue(1))
+				assert.Len(t, args, 0)
+			})
+		}
+	}
+}
+
 func getFakeCmd(action string, setType ...SetType) *cmd {
 	st := HashIp
 	if len(setType) > 0 {
