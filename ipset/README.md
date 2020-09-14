@@ -50,7 +50,7 @@ func init() {
 
 func main() {
 	// create test set even it's exist
-	set, _ := ipset.New("test", ipset.HashIp, ipset.Exist(true))
+	set, _ := ipset.New("test", ipset.HashIp, ipset.Exist(true), ipset.Timeout(time.Hour))
 	// output: test
 	log.Println(set.Name())
 
