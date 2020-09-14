@@ -48,8 +48,9 @@ func (c *cmd) appendArgs(args []string, opts ...Option) []string {
 	o := getOptions().apply(opts...)
 	defer optionsPool.Put(o)
 
-	if !o.disableExist {
+	if !o.disableExist && c.needExist() {
 		args = append(args, _exist)
+	} else {
 		o.disableExist = false
 	}
 
@@ -57,6 +58,7 @@ func (c *cmd) appendArgs(args []string, opts ...Option) []string {
 		args = append(args, _resolve)
 		o.resolve = false
 	}
+
 	return args
 }
 
@@ -86,6 +88,10 @@ func (c *cmd) isTwoArgs() bool {
 
 func (c *cmd) shouldAppendOut() bool {
 	return c.action == _list || c.action == _save
+}
+
+func (c *cmd) needExist() bool {
+	return c.action == _create || c.action == _add || c.action == _del
 }
 
 var cmdPool = sync.Pool{
