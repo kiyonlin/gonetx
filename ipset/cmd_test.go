@@ -371,7 +371,7 @@ func Test_Options_HashSize(t *testing.T) {
 				assert.Len(t, args, 0)
 			})
 
-			if c.needHashSize() {
+			if c.needHash() {
 				t.Run(action+" "+string(setType)+" need hashsize", func(t *testing.T) {
 					args := c.appendArgs(nil, HashSize(1))
 					assert.Equal(t, _hashsize, args[0])
@@ -380,6 +380,31 @@ func Test_Options_HashSize(t *testing.T) {
 			} else {
 				t.Run(action+" "+string(setType)+" ignore hashsize", func(t *testing.T) {
 					args := c.appendArgs(nil, HashSize(1))
+					assert.Len(t, args, 0)
+				})
+			}
+		}
+	}
+}
+
+func Test_Options_MaxElem(t *testing.T) {
+	for _, action := range testActions {
+		for _, setType := range testSetTypes {
+			c := getFakeCmd(action, setType)
+			t.Run(action+" "+string(setType)+" without maxelem", func(t *testing.T) {
+				args := c.appendArgs(nil, MaxElem(0))
+				assert.Len(t, args, 0)
+			})
+
+			if c.needHash() {
+				t.Run(action+" "+string(setType)+" need maxelem", func(t *testing.T) {
+					args := c.appendArgs(nil, MaxElem(1))
+					assert.Equal(t, _maxelem, args[0])
+					assert.Equal(t, "1", args[1])
+				})
+			} else {
+				t.Run(action+" "+string(setType)+" ignore maxelem", func(t *testing.T) {
+					args := c.appendArgs(nil, MaxElem(1))
 					assert.Len(t, args, 0)
 				})
 			}

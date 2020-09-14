@@ -39,6 +39,7 @@ const (
 	_nomatch  = "nomatch"
 	_family   = "family"
 	_hashsize = "hashsize"
+	_maxelem  = "maxelem"
 )
 
 type cmd struct {
@@ -118,8 +119,12 @@ func (c *cmd) appendArgs(args []string, opts ...Option) []string {
 		args = append(args, _family, string(o.family))
 	}
 
-	if o.hashSize != 0 && c.needHashSize() {
+	if o.hashSize != 0 && c.needHash() {
 		args = append(args, _hashsize, i2str(int64(o.hashSize)))
+	}
+
+	if o.maxElem != 0 && c.needHash() {
+		args = append(args, _maxelem, i2str(int64(o.maxElem)))
 	}
 
 	return args
@@ -184,7 +189,7 @@ func (c *cmd) needFamily() bool {
 	return c.action == _create && c.setType != HashMac && strings.HasPrefix(string(c.setType), "hash")
 }
 
-func (c *cmd) needHashSize() bool {
+func (c *cmd) needHash() bool {
 	return c.action == _create && strings.HasPrefix(string(c.setType), "hash")
 }
 
