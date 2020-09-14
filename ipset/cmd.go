@@ -24,9 +24,10 @@ const (
 
 // Options
 const (
-	_timeout = "timeout"
-	_exist   = "-exist"
-	_resolve = "-resolve"
+	_timeout  = "timeout"
+	_exist    = "-exist"
+	_resolve  = "-resolve"
+	_counters = "counters"
 )
 
 type cmd struct {
@@ -60,6 +61,10 @@ func (c *cmd) appendArgs(args []string, opts ...Option) []string {
 
 	if o.resolve && c.needResolve() {
 		args = append(args, _resolve)
+	}
+
+	if o.counters && c.needCounters() {
+		args = append(args, _counters)
 	}
 
 	return args
@@ -99,6 +104,10 @@ func (c *cmd) needTimeout() bool {
 
 func (c *cmd) needResolve() bool {
 	return c.action == _list || c.action == _save
+}
+
+func (c *cmd) needCounters() bool {
+	return c.action == _create
 }
 
 var cmdPool = sync.Pool{

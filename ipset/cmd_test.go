@@ -90,6 +90,28 @@ func Test_Options_Resolve(t *testing.T) {
 	}
 }
 
+func Test_Options_Counters(t *testing.T) {
+	for _, action := range testActions {
+		c := getFakeCmd(action)
+		t.Run(action+" without counters", func(t *testing.T) {
+			args := c.appendArgs(nil, Counters(false))
+			assert.Len(t, args, 0)
+		})
+
+		if c.needCounters() {
+			t.Run(action+" need counters", func(t *testing.T) {
+				args := c.appendArgs(nil, Counters(true))
+				assert.Equal(t, _counters, args[0])
+			})
+		} else {
+			t.Run(action+" ignore counters", func(t *testing.T) {
+				args := c.appendArgs(nil, Counters(true))
+				assert.Len(t, args, 0)
+			})
+		}
+	}
+}
+
 func getFakeCmd(action string, setType ...SetType) *cmd {
 	st := HashIp
 	if len(setType) > 0 {
