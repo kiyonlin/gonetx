@@ -131,6 +131,48 @@ func Test_Flush(t *testing.T) {
 	})
 }
 
+func Test_Destroy(t *testing.T) {
+	t.Run("all", func(t *testing.T) {
+		t.Run("success", func(t *testing.T) {
+			setupCmd()
+			defer teardownCmd()
+
+			assert.Nil(t, Destroy())
+		})
+
+		t.Run("error", func(t *testing.T) {
+			setupCmd(flag)
+			defer teardownCmd()
+
+			err := Destroy()
+			require.Error(t, err)
+			assert.Equal(t,
+				"ipset: can't destroy all set: fake error",
+				err.Error())
+		})
+	})
+
+	t.Run("multi", func(t *testing.T) {
+		t.Run("success", func(t *testing.T) {
+			setupCmd()
+			defer teardownCmd()
+
+			assert.Nil(t, Destroy("a", "b"))
+		})
+
+		t.Run("error", func(t *testing.T) {
+			setupCmd(flag)
+			defer teardownCmd()
+
+			err := Destroy("a", "b")
+			require.Error(t, err)
+			assert.Equal(t,
+				"ipset: can't destroy set a: fake error",
+				err.Error())
+		})
+	})
+}
+
 func Test_Swap(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		setupCmd()

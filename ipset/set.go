@@ -111,11 +111,11 @@ func (s set) Test(entry string, options ...Option) error {
 }
 
 func (s set) Flush() error {
-	return Flush(s.name)
+	return flush(s.name)
 }
 
 func (s set) Destroy() error {
-	return s.do(_destroy, "")
+	return destroy(s.name)
 }
 
 func (s set) do(action, entry string, options ...Option) error {

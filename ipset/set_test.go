@@ -226,7 +226,7 @@ func Test_Set_Destroy(t *testing.T) {
 		require.Error(t, err)
 
 		assert.Equal(t,
-			fmt.Sprintf("ipset: can't %s %s: fake error", _destroy, s.name),
+			fmt.Sprintf("ipset: can't %s set %s: fake error", _destroy, s.name),
 			err.Error())
 
 	})

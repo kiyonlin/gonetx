@@ -140,6 +140,37 @@ func flushAll() error {
 	return nil
 }
 
+// Destroy removes the specified set or all the sets if none is given.
+// If the set has got reference(s), nothing is done and no set destroyed.
+func Destroy(names ...string) error {
+	if len(names) > 0 {
+		for _, name := range names {
+			if err := destroy(name); err != nil {
+				return err
+			}
+		}
+	}
+	return destroyAll()
+}
+
+// destroy removes specific set
+func destroy(name string) error {
+	if out, err := execCommand(ipsetPath, _destroy, name).
+		CombinedOutput(); err != nil {
+		return fmt.Errorf("ipset: can't destroy set %s: %s", name, out)
+	}
+	return nil
+}
+
+// destroyAll removes all set
+func destroyAll() error {
+	if out, err := execCommand(ipsetPath, _destroy).
+		CombinedOutput(); err != nil {
+		return fmt.Errorf("ipset: can't destroy all set: %s", out)
+	}
+	return nil
+}
+
 // Swap swaps the content of two sets, or in another words,
 // exchange the action of two sets. The referred sets must
 // disableExist and compatible type of sets can be swapped only.
@@ -151,43 +182,6 @@ func Swap(from, to string) error {
 	return nil
 }
 
-//
-//// New creates a new set and returns an instance of *IPSet.
-//// Example:
-//// 	set1 := ipset.New("set1", ipset.HashIp)
-//// 	set2 := ipset.New("set2", ipset.HashNet, Timeout(time.Hour))
-//func New(action string, setType SetType, options ...Option) (*IPSet, error) {
-//	if err := checkBinAndVersion(); err != nil {
-//		return nil, err
-//	}
-//
-//	s := &IPSet{
-//		action:       action,
-//		setType:    setType,
-//		family:     defaultFamily,
-//		hashSize:   defaultHashSize,
-//		maxElement: defaultMaxElement,
-//	}
-//
-//	if len(options) > 0 {
-//		opt := options[0]
-//
-//		// Fill custom values here
-//		if opt.Family != "" {
-//			s.family = opt.Family
-//		}
-//
-//		if opt.HashSize > 0 {
-//			s.hashSize = opt.HashSize
-//		}
-//
-//		if opt.MaxElement > 0 {
-//			s.maxElement = opt.MaxElement
-//		}
-//	}
-//
-//	return s.createHashSet(action)
-//}
 //Check checks whether there is an ipset command in the system.
 // If so, check if the version is legal.
 func Check() error {
@@ -212,16 +206,6 @@ func Check() error {
 	return ErrVersionNotSupported
 }
 
-//
-//func (s *IPSet) createHashSet(action string) (*IPSet, error) {
-//	out, err := exec.Command(ipsetPath, "create", action, string(s.setType), "family", s.family, "hashsize", strconv.Itoa(s.hashSize),
-//		"maxelem", strconv.Itoa(s.maxElement), "timeout", strconv.Itoa(s.timeout), "-disableExist").CombinedOutput()
-//	if err != nil {
-//		return nil, fmt.Errorf("ipset: can't create ipset %s with type %s: %s", action, s.setType, out)
-//	}
-//	return s, nil
-//}
-//
 //// Refresh is used to to overwrite the set with the specified entries.
 //// The ipset is updated on the fly by hot swapping it with a temporary set.
 //func (s *IPSet) Refresh(entries ...string) (err error) {
@@ -251,119 +235,7 @@ func Check() error {
 //	return Swap(tempName, s.action)
 //}
 //
-//var notFlag = []byte("NOT")
-//
-//// Test tests whether an entry is in a set or not.
-//func (s *IPSet) Test(entry string) (bool, error) {
-//	out, err := exec.Command(ipsetPath, "test", s.action, entry).CombinedOutput()
-//	if err != nil {
-//		return false, fmt.Errorf("ipset: can't test entry %s: %s", entry, out)
-//	}
-//
-//	return bytes.Index(out, notFlag) == -1, nil
-//}
-//
-//// Add adds a given entry to the set with timeout.
-//// A timeout of 0 means that the entry will be stored permanently in the set.
-//func (s *IPSet) Add(entry string, timeout int) error {
-//	out, err := exec.Command(ipsetPath, "add", s.action, entry, "timeout", strconv.Itoa(timeout), "-disableExist").CombinedOutput()
-//	if err != nil {
-//		return fmt.Errorf("ispet: can't add entry %s: %s", entry, out)
-//	}
-//	return nil
-//}
-//
-//// AddWithOption adds the specified entry to the set with additional options.
-//func (s *IPSet) AddWithOption(entry string, option string) error {
-//	out, err := exec.Command(ipsetPath, "add", s.action, entry, option, "-disableExist").CombinedOutput()
-//	if err != nil {
-//		return fmt.Errorf("ipset: can't add entry %s with option %s : %s", entry, option, out)
-//	}
-//	return nil
-//}
-//
-//// Del deletes an entry from the set.
-//func (s *IPSet) Del(entry string) error {
-//	out, err := exec.Command(ipsetPath, "del", s.action, entry, "-disableExist").CombinedOutput()
-//	if err != nil {
-//		return fmt.Errorf("ipset: can't delete entry %s: %s", entry, out)
-//	}
-//	return nil
-//}
-//
-//// Rename renames the set.
-//// Target set identified must not disableExist.
-//func (s *IPSet) Rename(target string) error {
-//	out, err := exec.Command(ipsetPath, "rename", s.action, target).CombinedOutput()
-//	if err != nil {
-//		return fmt.Errorf("ipset: can't rename set from %s to %s: %s", s.action, target, out)
-//	}
-//	return nil
-//}
-//
-//// List gets the entries for the set.
-//func (s *IPSet) List() ([]string, error) {
-//	out, err := exec.Command(ipsetPath, "list", s.action).CombinedOutput()
-//	if err != nil {
-//		return nil, fmt.Errorf("error listing set %s: %v (%s)", s.action, err, out)
-//	}
-//	r := regexp.MustCompile("(?m)^(.*\n)*Members:\n")
-//	list := r.ReplaceAllString(string(out[:]), "")
-//	return strings.Split(list, "\n"), nil
-//}
-//
-//// Destroy destroys the set itself.
-//func (s *IPSet) Destroy() error {
-//	out, err := exec.Command(ipsetPath, "destroy", s.action).CombinedOutput()
-//	if err != nil {
-//		return fmt.Errorf("ispet: can't destroy set %s: %s", s.action, out)
-//	}
-//	return nil
-//}
-//
-//// Swap swaps the content of two sets, or in another words, exchange the action of two sets.
-//// The referred sets must disableExist and compatible type of sets can be swapped only.
-//func Swap(from, to string) error {
-//	if err := checkBinAndVersion(); err != nil {
-//		return err
-//	}
-//
-//	out, err := exec.Command(ipsetPath, "swap", from, to).CombinedOutput()
-//	if err != nil {
-//		return fmt.Errorf("ipset: can't swap ipset from %s to %s: %s", from, to, out)
-//	}
-//	return nil
-//}
-//
-//// Flush flushes all entries from the specified set or flush all sets if none is given.
-//func Flush(names ...string) error {
-//	return do("flush", names...)
-//}
-//
-//// Destroy destroys the specified set or all the sets if none is given.
-//// If the set has got reference(s), nothing is done and no set destroyed.
-//func Destroy(names ...string) error {
-//	return do("destroy", names...)
-//}
-//
-//func do(action string, names ...string) error {
-//	if err := checkBinAndVersion(); err != nil {
-//		return err
-//	}
-//
-//	buildArgs := append([]string{action}, names...)
-//
-//	out, err := exec.Command(ipsetPath, buildArgs...).CombinedOutput()
-//	if err != nil {
-//		setName := "all"
-//		if len(names) > 0 {
-//			setName = strings.Join(names, ",")
-//		}
-//		return fmt.Errorf("ipset: can't %s %s: %s", action, setName, out)
-//	}
-//	return nil
-//}
-//
+
 func isSupported() (bool, error) {
 	if out, err := execCommand(ipsetPath, _version).
 		CombinedOutput(); err != nil {
