@@ -49,13 +49,10 @@ func Test_Set_ListToFile(t *testing.T) {
 		defer teardownCmd()
 		s := getSet()
 
-		f, err := ioutil.TempFile("", "")
-		require.NoError(t, err)
-		filename := f.Name()
-		require.NoError(t, f.Close())
-		defer os.Remove(filename)
+		filename := "list.test"
+		defer removeFile(t, filename)
 
-		err = s.ListToFile(filename, Resolve(true))
+		err := s.ListToFile(filename, Resolve(true))
 		require.Nil(t, err)
 
 		b, err := ioutil.ReadFile(filename)
@@ -270,13 +267,10 @@ func Test_Set_SaveToFile(t *testing.T) {
 		defer teardownCmd()
 		s := getSet()
 
-		f, err := ioutil.TempFile("", "")
-		require.NoError(t, err)
-		filename := f.Name()
-		require.NoError(t, f.Close())
-		defer os.Remove(filename)
+		filename := "save.test"
+		defer removeFile(t, filename)
 
-		err = s.SaveToFile(filename, Resolve(true))
+		err := s.SaveToFile(filename, Resolve(true))
 		require.Nil(t, err)
 
 		b, err := ioutil.ReadFile(filename)
@@ -334,7 +328,7 @@ func Test_Set_RestoreFromFile(t *testing.T) {
 
 		filename := "restore.test"
 		require.NoError(t, ioutil.WriteFile(filename, []byte("1.1.1.1\n"), 0640))
-		defer os.Remove(filename)
+		defer removeFile(t, filename)
 
 		err := s.RestoreFromFile(filename)
 		require.Nil(t, err)
@@ -359,7 +353,7 @@ func Test_Set_RestoreFromFile(t *testing.T) {
 
 		filename := "restore.test"
 		require.NoError(t, ioutil.WriteFile(filename, []byte("1.1.1.1\n"), 0640))
-		defer os.Remove(filename)
+		defer removeFile(t, filename)
 
 		err := s.RestoreFromFile(filename)
 		require.Error(t, err)
@@ -377,4 +371,8 @@ func getSet(setType ...SetType) set {
 		s.setType = setType[0]
 	}
 	return s
+}
+
+func removeFile(t assert.TestingT, filename string) {
+	assert.Nil(t, os.Remove(filename))
 }
