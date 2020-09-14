@@ -41,6 +41,7 @@ const (
 	_hashsize = "hashsize"
 	_maxelem  = "maxelem"
 	_netmask  = "netmask"
+	_markmask = "markmask"
 )
 
 type cmd struct {
@@ -65,7 +66,7 @@ func (c *cmd) appendArgs(args []string, opts ...Option) []string {
 	defer releaseOptions(o)
 
 	if o.timeout > 0 && c.needTimeout() {
-		args = append(args, _timeout, i2str(int64(o.timeout.Seconds())))
+		args = append(args, _timeout, i2str(uint64(o.timeout.Seconds())))
 	}
 
 	if o.exist && c.needExist() {
@@ -81,11 +82,11 @@ func (c *cmd) appendArgs(args []string, opts ...Option) []string {
 	}
 
 	if o.countersPackets > 0 && c.onlyAdd() {
-		args = append(args, _packets, i2str(int64(o.countersPackets)))
+		args = append(args, _packets, i2str(uint64(o.countersPackets)))
 	}
 
 	if o.countersBytes > 0 && c.onlyAdd() {
-		args = append(args, _bytes, i2str(int64(o.countersBytes)))
+		args = append(args, _bytes, i2str(uint64(o.countersBytes)))
 	}
 
 	if o.comment && c.onlyCreate() {
@@ -109,7 +110,7 @@ func (c *cmd) appendArgs(args []string, opts ...Option) []string {
 	}
 
 	if o.skbqueue != 0 && c.onlyAdd() {
-		args = append(args, _skbqueue, i2str(int64(o.skbqueue)))
+		args = append(args, _skbqueue, i2str(uint64(o.skbqueue)))
 	}
 
 	if o.nomatch && c.needNomatch() {
@@ -121,15 +122,19 @@ func (c *cmd) appendArgs(args []string, opts ...Option) []string {
 	}
 
 	if o.hashSize != 0 && c.needHash() {
-		args = append(args, _hashsize, i2str(int64(o.hashSize)))
+		args = append(args, _hashsize, i2str(uint64(o.hashSize)))
 	}
 
 	if o.maxElem != 0 && c.needHash() {
-		args = append(args, _maxelem, i2str(int64(o.maxElem)))
+		args = append(args, _maxelem, i2str(uint64(o.maxElem)))
 	}
 
 	if o.netmask != 0 && c.needNetmask() {
-		args = append(args, _netmask, i2str(int64(o.netmask)))
+		args = append(args, _netmask, i2str(uint64(o.netmask)))
+	}
+
+	if o.markmask != 0 && c.needMarkmask() {
+		args = append(args, _markmask, i2str(uint64(o.markmask)))
 	}
 
 	return args
@@ -203,6 +208,10 @@ func (c *cmd) needNetmask() bool {
 		(c.setType == BitmapIp || c.setType == HashIp)
 }
 
+func (c *cmd) needMarkmask() bool {
+	return c.action == _create && c.setType == HashIpMark
+}
+
 var cmdPool = sync.Pool{
 	New: func() interface{} {
 		return &cmd{}
@@ -225,6 +234,6 @@ func putCmd(c *cmd) {
 	cmdPool.Put(c)
 }
 
-func i2str(i int64) string {
-	return strconv.FormatInt(i, 10)
+func i2str(i uint64) string {
+	return strconv.FormatUint(i, 10)
 }
