@@ -70,6 +70,8 @@ func releaseOptions(o *options) {
 	o.netmask = 0
 	o.markmask = 0
 	o.listSize = 0
+	o.ipRange = ""
+	o.portRange = ""
 	optionsPool.Put(o)
 }
 
