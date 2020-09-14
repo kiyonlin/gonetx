@@ -24,9 +24,10 @@ import (
 	"os/exec"
 )
 
-const (
-	minMajorVersion = 6
-)
+// Version of current package
+const Version = "v1.0-alpha"
+
+const minMajorVersion = 6
 
 var (
 	ipsetPath string
@@ -41,6 +42,7 @@ var (
 	execLookPath = exec.LookPath
 )
 
+// IPSet is abstract of ipset
 type IPSet interface {
 	// List dumps header data and the entries for the set to an
 	// *Info instance. The Resolve option can be used to force
