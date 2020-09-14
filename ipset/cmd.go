@@ -30,6 +30,7 @@ const (
 	_counters = "counters"
 	_packets  = "packets"
 	_bytes    = "bytes"
+	_comment  = "comment"
 )
 
 type cmd struct {
@@ -77,6 +78,10 @@ func (c *cmd) appendArgs(args []string, opts ...Option) []string {
 		args = append(args, _bytes, i2str(int64(o.countersBytes)))
 	}
 
+	if o.comment && c.onlyCreate() {
+		args = append(args, _comment)
+	}
+
 	return args
 }
 
@@ -122,6 +127,10 @@ func (c *cmd) needCounters() bool {
 
 func (c *cmd) onlyAdd() bool {
 	return c.action == _add
+}
+
+func (c *cmd) onlyCreate() bool {
+	return c.action == _create
 }
 
 var cmdPool = sync.Pool{

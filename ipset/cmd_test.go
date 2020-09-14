@@ -158,6 +158,28 @@ func Test_Options_Bytes(t *testing.T) {
 	}
 }
 
+func Test_Options_Comment(t *testing.T) {
+	for _, action := range testActions {
+		c := getFakeCmd(action)
+		t.Run(action+" without comment", func(t *testing.T) {
+			args := c.appendArgs(nil, Comment(false))
+			assert.Len(t, args, 0)
+		})
+
+		if c.onlyCreate() {
+			t.Run(action+" need comment", func(t *testing.T) {
+				args := c.appendArgs(nil, Comment(true))
+				assert.Equal(t, _comment, args[0])
+			})
+		} else {
+			t.Run(action+" ignore comment", func(t *testing.T) {
+				args := c.appendArgs(nil, Comment(true))
+				assert.Len(t, args, 0)
+			})
+		}
+	}
+}
+
 func getFakeCmd(action string, setType ...SetType) *cmd {
 	st := HashIp
 	if len(setType) > 0 {
