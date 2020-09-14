@@ -98,7 +98,7 @@ type IPSet interface {
 // option is specified, ipset raises an error when the same set
 // (setname and create parameters are identical) already exists.
 func New(name string, setType SetType, options ...Option) (IPSet, error) {
-	c := getCmd(_create, name, setType)
+	c := getCmd(_create, name, setType, string(setType))
 	defer putCmd(c)
 	if err := c.exec(options...); err != nil {
 		return nil, err

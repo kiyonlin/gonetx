@@ -5,6 +5,7 @@ import (
 	"sync"
 )
 
+// Commands
 const (
 	_create  = "create"
 	_add     = "add"
@@ -20,6 +21,12 @@ const (
 	_version = "version"
 )
 
+// Options
+const (
+	_exist   = "-exist"
+	_resolve = "-resolve"
+)
+
 type cmd struct {
 	action  string
 	name    string
@@ -29,28 +36,28 @@ type cmd struct {
 }
 
 func (c *cmd) buildArgs(opts ...Option) (args []string) {
-	if c.action == _create {
-		args = append(args, c.action, c.name, string(c.setType))
-	} else if c.action == _list {
-		args = append(args, c.action, c.name)
-	} else {
-		args = append(args, c.action, c.name, c.entry)
+	args = append(args, c.action, c.name)
+	if !c.isTwoArgs() {
+		args = append(args, c.entry)
 	}
 
+	return c.appendArgs(args, opts...)
+}
+
+func (c *cmd) appendArgs(args []string, opts ...Option) []string {
 	o := getOptions().apply(opts...)
 	defer optionsPool.Put(o)
 
 	if !o.disableExist {
-		args = append(args, "-exist")
+		args = append(args, _exist)
 		o.disableExist = false
 	}
 
-	if (c.action == _list || c.action == _save) && o.resolve {
-		args = append(args, "-resolve")
+	if (c.shouldAppendOut()) && o.resolve {
+		args = append(args, _resolve)
 		o.resolve = false
 	}
-
-	return
+	return args
 }
 
 func (c *cmd) exec(opts ...Option) error {
@@ -58,23 +65,27 @@ func (c *cmd) exec(opts ...Option) error {
 		CombinedOutput()
 
 	if err != nil {
-		if c.action == _list || c.action == _save || c.action == _destroy {
+		if c.isTwoArgs() {
 			return fmt.Errorf("ipset: can't %s %s: %s", c.action, c.name, out)
 		}
 
-		target := c.entry
-		if target == "" {
-			target = string(c.setType)
-		}
-
-		return fmt.Errorf("ipset: can't %s %s %s: %s", c.action, c.name, target, out)
+		return fmt.Errorf("ipset: can't %s %s %s: %s", c.action, c.name, c.entry, out)
 	}
 
-	if c.action == _list || c.action == _save {
+	if c.shouldAppendOut() {
 		c.out = out
 	}
 
 	return nil
+}
+
+func (c *cmd) isTwoArgs() bool {
+	return c.action == _list || c.action == _save ||
+		c.action == _destroy || c.action == _flush
+}
+
+func (c *cmd) shouldAppendOut() bool {
+	return c.action == _list || c.action == _save
 }
 
 var cmdPool = sync.Pool{
