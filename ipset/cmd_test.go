@@ -180,6 +180,29 @@ func Test_Options_Comment(t *testing.T) {
 	}
 }
 
+func Test_Options_CommentContent(t *testing.T) {
+	for _, action := range testActions {
+		c := getFakeCmd(action)
+		t.Run(action+" without comment content", func(t *testing.T) {
+			args := c.appendArgs(nil, CommentContent(""))
+			assert.Len(t, args, 0)
+		})
+
+		if c.onlyAdd() {
+			t.Run(action+" need comment content", func(t *testing.T) {
+				args := c.appendArgs(nil, CommentContent("comment"))
+				assert.Equal(t, _comment, args[0])
+				assert.Equal(t, "comment", args[1])
+			})
+		} else {
+			t.Run(action+" ignore comment content", func(t *testing.T) {
+				args := c.appendArgs(nil, CommentContent("comment"))
+				assert.Len(t, args, 0)
+			})
+		}
+	}
+}
+
 func getFakeCmd(action string, setType ...SetType) *cmd {
 	st := HashIp
 	if len(setType) > 0 {

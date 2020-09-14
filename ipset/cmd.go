@@ -82,6 +82,10 @@ func (c *cmd) appendArgs(args []string, opts ...Option) []string {
 		args = append(args, _comment)
 	}
 
+	if o.commentContent != "" && c.onlyAdd() {
+		args = append(args, _comment, o.commentContent)
+	}
+
 	return args
 }
 
