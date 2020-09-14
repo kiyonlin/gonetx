@@ -19,9 +19,9 @@ func main() {
 	// output: test
 	log.Println(set.Name())
 
-	set.Flush()
+	_ = set.Flush()
 
-	set.Add("1.1.1.1", ipset.Timeout(time.Hour))
+	_ = set.Add("1.1.1.1", ipset.Timeout(time.Hour))
 
 	ok, _ := set.Test("1.1.1.1")
 	// output: true
@@ -35,7 +35,7 @@ func main() {
 	// output:
 	log.Println(info)
 
-	set.Del("1.1.1.1")
+	_ = set.Del("1.1.1.1")
 
-	set.Destroy()
+	_ = set.Destroy()
 }
