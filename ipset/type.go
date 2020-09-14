@@ -252,6 +252,36 @@ const (
 	//      ipset test foo 01:02:03:04:05:06
 	HashMac SetType = "hash:mac"
 
+	// Hash:IpMac set type uses a hash to store IP and a MAC
+	// address pairs. Zero valued MAC addresses cannot be stored
+	// in a Hash:IpMac type of set. For matches on destination
+	// MAC addresses, see COMMENTS below.
+	//
+	//      CREATE-OPTIONS  := [ family { inet | inet6 } ] |
+	//                         [ hashsize value ] [ maxelem value ]
+	//                         [ timeout value ] [ counters ]
+	//                         [ comment ] [ skbinfo ]
+	//
+	//      ADD-ENTRY := ipaddr,macaddr
+	//
+	//      ADD-OPTIONS := [ timeout value ] [ packets value ]
+	//                     [ bytes value ] [ comment string ]
+	//                     [ skbmark value ] [ skbprio value ]
+	//                     [ skbqueue value ]
+	//
+	//      DEL-ENTRY := ipaddr,macaddr
+	//
+	//      TEST-ENTRY := ipaddr,macaddr
+	//
+	// Examples:
+	//
+	//      ipset create foo hash:ip,mac
+	//
+	//      ipset add foo 1.1.1.1,01:02:03:04:05:06
+	//
+	//      ipset test foo 1.1.1.1,01:02:03:04:05:06
+	HashIpMac SetType = "hash:ip,mac"
+
 	// HashNet set type uses a hash to store different sized IP
 	// network addresses. Network address with zero prefix size
 	// cannot be stored in this type of sets.
