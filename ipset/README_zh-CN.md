@@ -89,13 +89,13 @@ func init() {
 ```
 
 ## New
-使用`ipset.New`创建一个用`setname`和指定的`set`类型标识的`set`。如果指定了`ipset.Exist`选项，则当已经存在相同的集合（集合名称和创建参数相同）时，`ipset`将忽略该错误。
+使用`ipset.New`创建一个用`setname`和指定的`set`类型标识的`set`。如果指定了`ipset.Exist`选项，则当已经存在相同的`set`（`set`名称和创建参数相同）时，`ipset`将忽略该错误。
 
 ```go
 set, _ := ipset.New("test", ipset.HashIp, ipset.Exist(true), ipset.Netmask(24))
 ```
 
-每个集合类型可能具有不同的创建选项，请访问[SetType](https://pkg.go.dev/github.com/kiyonlin/gonetx/ipset?tab=doc#SetType)和[Option](https://pkg.go.dev/github.com/kiyonlin/gonetx/ipset?tab=doc#Option)以获取更多详细信息。
+每个`set`类型可能具有不同的创建选项，请访问[SetType](https://pkg.go.dev/github.com/kiyonlin/gonetx/ipset?tab=doc#SetType)和[Option](https://pkg.go.dev/github.com/kiyonlin/gonetx/ipset?tab=doc#Option)以获取更多详细信息。
 
 创建`set`后，可以使用以下方法：
 ```go
