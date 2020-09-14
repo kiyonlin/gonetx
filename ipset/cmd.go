@@ -2,6 +2,7 @@ package ipset
 
 import (
 	"fmt"
+	"strconv"
 	"sync"
 )
 
@@ -23,6 +24,7 @@ const (
 
 // Options
 const (
+	_timeout = "timeout"
 	_exist   = "-exist"
 	_resolve = "-resolve"
 )
@@ -47,6 +49,10 @@ func (c *cmd) buildArgs(opts ...Option) (args []string) {
 func (c *cmd) appendArgs(args []string, opts ...Option) []string {
 	o := acquireOptions().apply(opts...)
 	defer releaseOptions(o)
+
+	if o.timeout > 0 && c.needTimeout() {
+		args = append(args, _timeout, i2str(int64(o.timeout.Seconds())))
+	}
 
 	if o.exist && c.needExist() {
 		args = append(args, _exist)
@@ -83,12 +89,16 @@ func (c *cmd) isTwoArgs() bool {
 		c.action == _destroy || c.action == _flush
 }
 
-func (c *cmd) needResolve() bool {
-	return c.action == _list || c.action == _save
-}
-
 func (c *cmd) needExist() bool {
 	return c.action == _create || c.action == _add || c.action == _del
+}
+
+func (c *cmd) needTimeout() bool {
+	return c.action == _create || c.action == _add
+}
+
+func (c *cmd) needResolve() bool {
+	return c.action == _list || c.action == _save
 }
 
 var cmdPool = sync.Pool{
@@ -111,4 +121,8 @@ func getCmd(action, name string, setType SetType, entry ...string) *cmd {
 func putCmd(c *cmd) {
 	c.out = nil
 	cmdPool.Put(c)
+}
+
+func i2str(i int64) string {
+	return strconv.FormatInt(i, 10)
 }

@@ -78,7 +78,8 @@ func releaseOptions(o *options) {
 // the default timeout value (in seconds) for new entries.
 // If a set is created with timeout support, then the
 // same timeout option can be used to specify non-default
-// timeout values when adding entries.
+// timeout values when adding entries. The largest possible
+// timeout value is 2147483 seconds.
 //
 // Zero timeout value means the entry is added permanent
 // to the set. The timeout value of already added
