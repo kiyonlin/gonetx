@@ -45,18 +45,15 @@ func (c *cmd) buildArgs(opts ...Option) (args []string) {
 }
 
 func (c *cmd) appendArgs(args []string, opts ...Option) []string {
-	o := getOptions().apply(opts...)
-	defer optionsPool.Put(o)
+	o := acquireOptions().apply(opts...)
+	defer releaseOptions(o)
 
-	if !o.disableExist && c.needExist() {
+	if o.exist && c.needExist() {
 		args = append(args, _exist)
-	} else {
-		o.disableExist = false
 	}
 
 	if o.resolve && c.needResolve() {
 		args = append(args, _resolve)
-		o.resolve = false
 	}
 
 	return args

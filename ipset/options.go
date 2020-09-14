@@ -9,7 +9,7 @@ type Option func(opt *options)
 
 type options struct {
 	timeout         time.Duration
-	disableExist    bool
+	exist           bool
 	resolve         bool
 	counters        bool
 	countersPackets uint
@@ -43,8 +43,32 @@ var optionsPool = sync.Pool{
 	},
 }
 
-func getOptions() *options {
+func acquireOptions() *options {
 	return optionsPool.Get().(*options)
+}
+
+func releaseOptions(o *options) {
+	o.timeout = 0
+	o.exist = false
+	o.resolve = false
+	o.counters = false
+	o.countersPackets = 0
+	o.countersBytes = 0
+	o.comment = false
+	o.commentContent = ""
+	o.skbinfo = false
+	o.skbmark = ""
+	o.skbprio = ""
+	o.skbqueue = 0
+	o.hashSize = 0
+	o.maxElem = 0
+	o.family = ""
+	o.nomatch = false
+	o.forceadd = false
+	o.netmask = 0
+	o.markmask = 0
+	o.listSize = 0
+	optionsPool.Put(o)
 }
 
 // Timeout option is used for create and add command.
@@ -79,12 +103,12 @@ func Timeout(timeout time.Duration) Option {
 	}
 }
 
-// DisableExist option raises errors when exactly the same set is to
+// Exist option ignores errors when exactly the same set is to
 // be created or already added entry is added or missing
 // entry is deleted.
-func DisableExist(disableExist bool) Option {
+func Exist(exist bool) Option {
 	return func(opt *options) {
-		opt.disableExist = disableExist
+		opt.exist = exist
 	}
 }
 
