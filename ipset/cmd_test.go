@@ -203,6 +203,28 @@ func Test_Options_CommentContent(t *testing.T) {
 	}
 }
 
+func Test_Options_Skbinfo(t *testing.T) {
+	for _, action := range testActions {
+		c := getFakeCmd(action)
+		t.Run(action+" without skbinfo", func(t *testing.T) {
+			args := c.appendArgs(nil, Skbinfo(false))
+			assert.Len(t, args, 0)
+		})
+
+		if c.onlyCreate() {
+			t.Run(action+" need skbinfo", func(t *testing.T) {
+				args := c.appendArgs(nil, Skbinfo(true))
+				assert.Equal(t, _skbinfo, args[0])
+			})
+		} else {
+			t.Run(action+" ignore skbinfo", func(t *testing.T) {
+				args := c.appendArgs(nil, Skbinfo(true))
+				assert.Len(t, args, 0)
+			})
+		}
+	}
+}
+
 func getFakeCmd(action string, setType ...SetType) *cmd {
 	st := HashIp
 	if len(setType) > 0 {

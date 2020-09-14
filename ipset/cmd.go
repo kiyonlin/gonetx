@@ -31,6 +31,7 @@ const (
 	_packets  = "packets"
 	_bytes    = "bytes"
 	_comment  = "comment"
+	_skbinfo  = "skbinfo"
 )
 
 type cmd struct {
@@ -84,6 +85,10 @@ func (c *cmd) appendArgs(args []string, opts ...Option) []string {
 
 	if o.commentContent != "" && c.onlyAdd() {
 		args = append(args, _comment, o.commentContent)
+	}
+
+	if o.skbinfo && c.onlyCreate() {
+		args = append(args, _skbinfo)
 	}
 
 	return args
