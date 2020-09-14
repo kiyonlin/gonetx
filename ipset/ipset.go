@@ -51,7 +51,7 @@ type IPSet interface {
 	// action lookups(which may be slow).
 	ListToFile(filename string, options ...Option) error
 
-	// Name returns the set's action
+	// Name returns the set's name
 	Name() string
 
 	// Rename the set's action and the new action must not exist.
