@@ -112,6 +112,52 @@ func Test_Options_Counters(t *testing.T) {
 	}
 }
 
+func Test_Options_Packets(t *testing.T) {
+	for _, action := range testActions {
+		c := getFakeCmd(action)
+		t.Run(action+" without packets", func(t *testing.T) {
+			args := c.appendArgs(nil, Packets(0))
+			assert.Len(t, args, 0)
+		})
+
+		if c.onlyAdd() {
+			t.Run(action+" need packets", func(t *testing.T) {
+				args := c.appendArgs(nil, Packets(1))
+				assert.Equal(t, _packets, args[0])
+				assert.Equal(t, "1", args[1])
+			})
+		} else {
+			t.Run(action+" ignore packets", func(t *testing.T) {
+				args := c.appendArgs(nil, Packets(1))
+				assert.Len(t, args, 0)
+			})
+		}
+	}
+}
+
+func Test_Options_Bytes(t *testing.T) {
+	for _, action := range testActions {
+		c := getFakeCmd(action)
+		t.Run(action+" without bytes", func(t *testing.T) {
+			args := c.appendArgs(nil, Bytes(0))
+			assert.Len(t, args, 0)
+		})
+
+		if c.onlyAdd() {
+			t.Run(action+" need bytes", func(t *testing.T) {
+				args := c.appendArgs(nil, Bytes(1))
+				assert.Equal(t, _bytes, args[0])
+				assert.Equal(t, "1", args[1])
+			})
+		} else {
+			t.Run(action+" ignore bytes", func(t *testing.T) {
+				args := c.appendArgs(nil, Bytes(1))
+				assert.Len(t, args, 0)
+			})
+		}
+	}
+}
+
 func getFakeCmd(action string, setType ...SetType) *cmd {
 	st := HashIp
 	if len(setType) > 0 {

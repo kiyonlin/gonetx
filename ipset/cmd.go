@@ -28,6 +28,8 @@ const (
 	_exist    = "-exist"
 	_resolve  = "-resolve"
 	_counters = "counters"
+	_packets  = "packets"
+	_bytes    = "bytes"
 )
 
 type cmd struct {
@@ -65,6 +67,14 @@ func (c *cmd) appendArgs(args []string, opts ...Option) []string {
 
 	if o.counters && c.needCounters() {
 		args = append(args, _counters)
+	}
+
+	if o.countersPackets > 0 && c.onlyAdd() {
+		args = append(args, _packets, i2str(int64(o.countersPackets)))
+	}
+
+	if o.countersBytes > 0 && c.onlyAdd() {
+		args = append(args, _bytes, i2str(int64(o.countersBytes)))
 	}
 
 	return args
@@ -108,6 +118,10 @@ func (c *cmd) needResolve() bool {
 
 func (c *cmd) needCounters() bool {
 	return c.action == _create
+}
+
+func (c *cmd) onlyAdd() bool {
+	return c.action == _add
 }
 
 var cmdPool = sync.Pool{
