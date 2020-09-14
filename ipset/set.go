@@ -161,7 +161,7 @@ func (s set) doToFile(action, filename string, options ...Option) error {
 		return err
 	}
 
-	return ioutil.WriteFile(filename, c.out, 0640)
+	return ioutil.WriteFile(filename, c.out, 0600)
 }
 
 var maxRestoreSize = 1 << 16

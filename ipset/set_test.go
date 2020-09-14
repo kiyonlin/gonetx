@@ -338,7 +338,7 @@ func Test_Set_RestoreFromFile(t *testing.T) {
 		s := getSet()
 
 		filename := "restore.test"
-		require.NoError(t, ioutil.WriteFile(filename, []byte("1.1.1.1\n"), 0640))
+		require.NoError(t, ioutil.WriteFile(filename, []byte("1.1.1.1\n"), 0600))
 		defer removeFile(t, filename)
 
 		err := s.RestoreFromFile(filename)
@@ -363,7 +363,7 @@ func Test_Set_RestoreFromFile(t *testing.T) {
 		s := getSet()
 
 		filename := "restore.test"
-		require.NoError(t, ioutil.WriteFile(filename, []byte("1.1.1.1\n"), 0640))
+		require.NoError(t, ioutil.WriteFile(filename, []byte("1.1.1.1\n"), 0600))
 		defer removeFile(t, filename)
 
 		err := s.RestoreFromFile(filename)
