@@ -54,7 +54,7 @@ func (c *cmd) appendArgs(args []string, opts ...Option) []string {
 		o.disableExist = false
 	}
 
-	if (c.shouldAppendOut()) && o.resolve {
+	if o.resolve && c.needResolve() {
 		args = append(args, _resolve)
 		o.resolve = false
 	}
@@ -74,7 +74,7 @@ func (c *cmd) exec(opts ...Option) error {
 		return fmt.Errorf("ipset: can't %s %s %s: %s", c.action, c.name, c.entry, out)
 	}
 
-	if c.shouldAppendOut() {
+	if c.needResolve() {
 		c.out = out
 	}
 
@@ -86,7 +86,7 @@ func (c *cmd) isTwoArgs() bool {
 		c.action == _destroy || c.action == _flush
 }
 
-func (c *cmd) shouldAppendOut() bool {
+func (c *cmd) needResolve() bool {
 	return c.action == _list || c.action == _save
 }
 

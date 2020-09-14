@@ -67,6 +67,55 @@ func Test_Options_Exist_Ignore(t *testing.T) {
 	}
 }
 
+func Test_Options_Resolve(t *testing.T) {
+	tt := []struct {
+		action         string
+		resolve        bool
+		containResolve bool
+	}{
+		{_list, false, false},
+		{_list, true, true},
+		{_save, false, false},
+		{_save, true, true},
+	}
+
+	for _, tc := range tt {
+		c := getFakeCmd(tc.action)
+		args := c.appendArgs(nil, Resolve(tc.resolve))
+		if tc.containResolve {
+			assert.Len(t, args, 1)
+			assert.Equal(t, _resolve, args[0])
+		} else {
+			assert.Len(t, args, 0)
+		}
+	}
+}
+
+func Test_Options_Resolve_Ignore(t *testing.T) {
+	actions := []string{
+		_create,
+		_add,
+		_del,
+		_test,
+		_destroy,
+		_restore,
+		_flush,
+		_rename,
+		_swap,
+	}
+
+	for _, action := range actions {
+		t.Run(action, func(t *testing.T) {
+			c := getFakeCmd(action)
+			args := c.appendArgs(nil, DisableExist(true), Resolve(true))
+			assert.Len(t, args, 0)
+
+			args = c.appendArgs(nil, DisableExist(true), Resolve(false))
+			assert.Len(t, args, 0)
+		})
+	}
+}
+
 func getFakeCmd(action string, setType ...SetType) *cmd {
 	st := HashIp
 	if len(setType) > 0 {
