@@ -35,6 +35,7 @@ const (
 	_skbmark  = "skbmark"
 	_skbprio  = "skbprio"
 	_skbqueue = "skbqueue"
+	_nomatch  = "nomatch"
 )
 
 type cmd struct {
@@ -106,6 +107,10 @@ func (c *cmd) appendArgs(args []string, opts ...Option) []string {
 		args = append(args, _skbqueue, i2str(int64(o.skbqueue)))
 	}
 
+	if o.nomatch && c.needNomatch() {
+		args = append(args, _nomatch)
+	}
+
 	return args
 }
 
@@ -155,6 +160,13 @@ func (c *cmd) onlyAdd() bool {
 
 func (c *cmd) onlyCreate() bool {
 	return c.action == _create
+}
+
+func (c *cmd) needNomatch() bool {
+	return c.action == _add &&
+		(c.setType == HashNet || c.setType == HashNetNet ||
+			c.setType == HashNetPort || c.setType == HashIpPortNet ||
+			c.setType == HashNetPortNet || c.setType == HashNetIface)
 }
 
 var cmdPool = sync.Pool{

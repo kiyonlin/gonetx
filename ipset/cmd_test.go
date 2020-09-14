@@ -294,6 +294,28 @@ func Test_Options_Skbqueue(t *testing.T) {
 	}
 }
 
+func Test_Options_Nomatch(t *testing.T) {
+	for _, action := range testActions {
+		c := getFakeCmd(action)
+		t.Run(action+" without nomatch", func(t *testing.T) {
+			args := c.appendArgs(nil, Nomatch(false))
+			assert.Len(t, args, 0)
+		})
+
+		if c.needNomatch() {
+			t.Run(action+" need nomatch", func(t *testing.T) {
+				args := c.appendArgs(nil, Nomatch(true))
+				assert.Equal(t, _nomatch, args[0])
+			})
+		} else {
+			t.Run(action+" ignore nomatch", func(t *testing.T) {
+				args := c.appendArgs(nil, Nomatch(true))
+				assert.Len(t, args, 0)
+			})
+		}
+	}
+}
+
 func getFakeCmd(action string, setType ...SetType) *cmd {
 	st := HashIp
 	if len(setType) > 0 {
