@@ -171,7 +171,7 @@ const (
 	// interpret the stored numbers as TCP or UDP port numbers.
 	//
 	// proto only needs to be specified if a service action is
-	// used, and that action does not disableExist as a TCP service.
+	// used, and that action does not exist as a TCP service.
 	//
 	// Examples:
 	//

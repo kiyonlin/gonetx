@@ -16,7 +16,7 @@ func Test_Check(t *testing.T) {
 		assert.Nil(t, Check())
 	})
 
-	t.Run("ipset path is not disableExist", func(t *testing.T) {
+	t.Run("ipset path is not exist", func(t *testing.T) {
 		setupLookPath("error")
 		defer teardownLookPath()
 		assert.Equal(t, ErrNotFound, Check())

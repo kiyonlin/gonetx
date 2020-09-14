@@ -101,7 +101,7 @@ func setupLookPath(filename ...string) {
 	execLookPath = func(f string) (s string, err error) {
 		switch fn {
 		case "error":
-			err = fmt.Errorf("path not disableExist")
+			err = fmt.Errorf("path not exist")
 		case "":
 			s = f
 		default:

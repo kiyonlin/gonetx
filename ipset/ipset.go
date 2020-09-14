@@ -54,18 +54,17 @@ type IPSet interface {
 	// Name returns the set's action
 	Name() string
 
-	// Rename the set's action and the new action must not disableExist.
+	// Rename the set's action and the new action must not exist.
 	Rename(newName string) error
 
-	// Add adds a given entry to the set. If the DisableExist
-	// option is specified, ipset raises an error if the entry
-	// already added to the set.
+	// Add adds a given entry to the set. If the Exist option is
+	// specified, ipset ignores the error if the entry already
+	// added to the set.
 	Add(entry string, options ...Option) error
 
-	// Del deletes an entry from a set. If the DisableExist
-	// option is specified and the entry is not in the set
-	// (maybe already expired), then the command raises an
-	// error.
+	// Del deletes an entry from a set. If the Exist option is
+	// specified and the entry is not in the set (maybe already
+	// expired), then the command ignores the error.
 	Del(entry string, options ...Option) error
 
 	// Test tests whether an entry is in a set or not. Exit status
@@ -97,8 +96,8 @@ type IPSet interface {
 }
 
 // New create a set identified with setname and specified type.
-// The type may require type specific options. If the DisableExist
-// option is specified, ipset raises an error when the same set
+// The type may require type specific options. If the Exist
+// option is specified, ipset ignores the error when the same set
 // (setname and create parameters are identical) already exists.
 func New(name string, setType SetType, options ...Option) (IPSet, error) {
 	c := getCmd(_create, name, setType, string(setType))
@@ -173,7 +172,7 @@ func destroyAll() error {
 
 // Swap swaps the content of two sets, or in another words,
 // exchange the action of two sets. The referred sets must
-// disableExist and compatible type of sets can be swapped only.
+// exist and compatible type of sets can be swapped only.
 func Swap(from, to string) error {
 	if out, err := execCommand(ipsetPath, _swap, from, to).
 		CombinedOutput(); err != nil {
@@ -226,7 +225,7 @@ func Check() error {
 //	}()
 //
 //	for _, entry := range entries {
-//		out, err := exec.Command(ipsetPath, "add", tempName, entry, "-disableExist").CombinedOutput()
+//		out, err := exec.Command(ipsetPath, "add", tempName, entry, "-exist").CombinedOutput()
 //		if err != nil {
 //			return fmt.Errorf("ipset: can't add entry %s to set %s: %s", entry, tempName, out)
 //		}

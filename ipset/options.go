@@ -83,13 +83,13 @@ func releaseOptions(o *options) {
 // Zero timeout value means the entry is added permanent
 // to the set. The timeout value of already added
 // elements can be changed by re-adding the element using
-// the -disableExist option. Example:
+// the -exist option. Example:
 //
 //      ipset create test hash:ip timeout 300
 //
 //      ipset add test 192.168.0.1 timeout 60
 //
-//      ipset -disableExist add test 192.168.0.1 timeout 600
+//      ipset -exist add test 192.168.0.1 timeout 600
 //
 // When listing the set, the number of entries printed
 // in the header might be larger than the listed number
