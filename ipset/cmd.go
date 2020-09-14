@@ -42,6 +42,7 @@ const (
 	_maxelem  = "maxelem"
 	_netmask  = "netmask"
 	_markmask = "markmask"
+	_size     = "size"
 )
 
 type cmd struct {
@@ -137,6 +138,10 @@ func (c *cmd) appendArgs(args []string, opts ...Option) []string {
 		args = append(args, _markmask, i2str(uint64(o.markmask)))
 	}
 
+	if o.listSize != 0 && c.needListSize() {
+		args = append(args, _size, i2str(uint64(o.listSize)))
+	}
+
 	return args
 }
 
@@ -210,6 +215,10 @@ func (c *cmd) needNetmask() bool {
 
 func (c *cmd) needMarkmask() bool {
 	return c.action == _create && c.setType == HashIpMark
+}
+
+func (c *cmd) needListSize() bool {
+	return c.action == _create && c.setType == ListSet
 }
 
 var cmdPool = sync.Pool{
