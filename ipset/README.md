@@ -6,7 +6,7 @@
   <a href="https://goreportcard.com/report/github.com/kiyonlin/gonetx">
     <img src="https://img.shields.io/badge/%F0%9F%93%9D%20goreport-A%2B-75C46B">
   </a>
-  <a href="https://gocover.io/github.com/kiyonlin/gonetx">
+  <a href="https://gocover.io/github.com/kiyonlin/gonetx/ipset">
     <img src="https://img.shields.io/badge/%F0%9F%94%8E%20gocover-97.8%25-75C46B.svg?style=flat">
   </a>
   <a href="https://github.com/kiyonlin/gonetx/actions?query=workflow%3AGosec">
@@ -20,7 +20,7 @@
     </a>
 </p>
 
-This package is a almost whole `Golang` wrapper to the `ipset` user space utility. It allows `Golang` programs to easily manipulate `ipset`.
+This package is a almost whole `Golang` wrapper to the `ipset` userspace utility. It allows `Golang` programs to easily manipulate `ipset`.
 
 Visit [http://ipset.netfilter.org/ipset.man.html](http://ipset.netfilter.org/ipset.man.html) for more `ipset` command details. And `ipset` requires version `v6.0+`.
 
