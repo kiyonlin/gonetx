@@ -25,7 +25,7 @@ import (
 )
 
 // Version of current package
-const Version = "v1.0-alpha"
+const Version = "v1.0.0-alpha.1"
 
 const minMajorVersion = 6
 
