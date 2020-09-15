@@ -186,6 +186,9 @@ func (s set) Restore(r io.Reader) (err error) {
 		if _, err = b.Write(bb); err != nil {
 			return
 		}
+		if err = b.WriteByte('\n'); err != nil {
+			return
+		}
 	}
 	return s.restore(b.Bytes())
 }
