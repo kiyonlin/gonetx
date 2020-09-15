@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 // compiler assert
@@ -167,18 +168,30 @@ func (s set) doToFile(action, filename string, options ...Option) error {
 
 var maxRestoreSize = 1 << 16
 
-func (s set) Restore(r io.Reader) (err error) {
+func (s set) Restore(r io.Reader, exist ...bool) (err error) {
 	defer func() {
 		if err != nil {
 			err = fmt.Errorf("ipset: can't restore to %s(%s): %s", s.name, s.setType, err)
 		}
 	}()
 
-	b := &bytes.Buffer{}
-	for scanner := bufio.NewScanner(r); scanner.Scan(); {
-		bb := scanner.Bytes()
+	var (
+		br = acquireReader(r)
+		b  = &bytes.Buffer{}
+		bb []byte
+	)
+	defer releaseReader(br)
+
+	for {
+		bb, err = br.ReadBytes('\n')
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			return
+		}
 		if b.Len()+len(bb) > maxRestoreSize {
-			if err = s.restore(b.Bytes()); err != nil {
+			if err = s.restore(b.Bytes(), exist...); err != nil {
 				return
 			}
 			b.Reset()
@@ -186,18 +199,19 @@ func (s set) Restore(r io.Reader) (err error) {
 		if _, err = b.Write(bb); err != nil {
 			return
 		}
-		if err = b.WriteByte('\n'); err != nil {
-			return
-		}
 	}
-	return s.restore(b.Bytes())
+	return s.restore(b.Bytes(), exist...)
 }
 
 // restore data to ipset and length of b should
 // be less than 64K because of the size limit of
 // pipe.
-func (s set) restore(b []byte) (err error) {
-	c := execCommand(ipsetPath, _restore, "-exist")
+func (s set) restore(b []byte, exist ...bool) (err error) {
+	args := []string{_restore}
+	if len(exist) > 0 && exist[0] {
+		args = append(args, _exist)
+	}
+	c := execCommand(ipsetPath, args...)
 
 	var pipe io.WriteCloser
 	pipe, err = c.StdinPipe()
@@ -221,7 +235,7 @@ func (s set) restore(b []byte) (err error) {
 	return
 }
 
-func (s set) RestoreFromFile(filename string) (err error) {
+func (s set) RestoreFromFile(filename string, exist ...bool) (err error) {
 	var f *os.File
 	f, err = os.Open(filepath.Clean(filename))
 	if err != nil {
@@ -232,5 +246,21 @@ func (s set) RestoreFromFile(filename string) (err error) {
 			err = e
 		}
 	}()
-	return s.Restore(f)
+	return s.Restore(f, exist...)
+}
+
+var readerPool sync.Pool
+
+func acquireReader(r io.Reader) *bufio.Reader {
+	v := readerPool.Get()
+	if v == nil {
+		return bufio.NewReader(r)
+	}
+	br := v.(*bufio.Reader)
+	br.Reset(r)
+	return br
+}
+
+func releaseReader(br *bufio.Reader) {
+	readerPool.Put(br)
 }

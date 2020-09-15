@@ -25,9 +25,9 @@ func main() {
 
 	// Saved content:
 	_ = ioutil.WriteFile("saved",
-		[]byte("add test 1.1.1.1 timeout 3600 -exist\nadd test 1.1.1.2 timeout 3600 -exist\n"),
+		[]byte("add test 1.1.1.1 timeout 3600\nadd test 1.1.1.2 timeout 3600\n"),
 		0600)
-	_ = set.RestoreFromFile("saved")
+	_ = set.RestoreFromFile("saved", true)
 
 	data := &bytes.Buffer{}
 	data.WriteString("add test 1.1.1.3 timeout 3600 -exist\n")
@@ -42,8 +42,8 @@ func main() {
 	_ = set.SaveToFile("saved")
 	// cat saved:
 	//create test hash:ip family inet hashsize 1024 maxelem 100000 timeout 10800
-	//add test 1.1.1.3 timeout 3599
 	//add test 1.1.1.2 timeout 3599
 	//add test 1.1.1.1 timeout 3599
+	//add test 1.1.1.3 timeout 3599
 	//add test 1.1.1.4 timeout 3599
 }
