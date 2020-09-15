@@ -206,36 +206,6 @@ func Check() error {
 	return ErrVersionNotSupported
 }
 
-//// Refresh is used to to overwrite the set with the specified entries.
-//// The ipset is updated on the fly by hot swapping it with a temporary set.
-//func (s *IPSet) Refresh(entries ...string) (err error) {
-//	if len(entries) == 0 {
-//		return nil
-//	}
-//
-//	tempName := s.action + "-temp"
-//	_, err = s.createHashSet(tempName)
-//	if err != nil {
-//		return err
-//	}
-//
-//	defer func() {
-//		if e := Destroy(tempName); err == nil || e != nil {
-//			err = e
-//		}
-//	}()
-//
-//	for _, entry := range entries {
-//		out, err := exec.Command(ipsetPath, "add", tempName, entry, "-exist").CombinedOutput()
-//		if err != nil {
-//			return fmt.Errorf("ipset: can't add entry %s to set %s: %s", entry, tempName, out)
-//		}
-//	}
-//
-//	return Swap(tempName, s.action)
-//}
-//
-
 func isSupported() (bool, error) {
 	out, err := execCommand(ipsetPath, _version).
 		CombinedOutput()
