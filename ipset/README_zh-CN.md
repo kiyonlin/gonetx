@@ -52,9 +52,9 @@ func main() {
 	// output: test
 	log.Println(set.Name())
 
-	set.Flush()
+	_ = set.Flush()
 
-	set.Add("1.1.1.1", ipset.Timeout(time.Hour))
+	_ = set.Add("1.1.1.1", ipset.Timeout(time.Hour))
 
 	ok, _ := set.Test("1.1.1.1")
 	// output: true
@@ -65,12 +65,12 @@ func main() {
 	log.Println(ok)
 
 	info, _ := set.List()
-	// output:
+	// output: &{test hash:ip 4 family inet hashsize 1024 maxelem 65536 timeout 3600 216 0 [1.1.1.1 timeout 3599]}
 	log.Println(info)
 
-	set.Del("1.1.1.1")
+	_ = set.Del("1.1.1.1")
 
-	set.Destroy()
+	_ = set.Destroy()
 }
 ```
 

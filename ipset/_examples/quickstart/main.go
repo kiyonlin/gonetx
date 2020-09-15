@@ -32,7 +32,7 @@ func main() {
 	log.Println(ok)
 
 	info, _ := set.List()
-	// output:
+	// output: &{test hash:ip 4 family inet hashsize 1024 maxelem 65536 timeout 3600 216 0 [1.1.1.1 timeout 3599]}
 	log.Println(info)
 
 	_ = set.Del("1.1.1.1")
