@@ -15,7 +15,11 @@
   <a href="https://github.com/kiyonlin/gonetx/actions?query=workflow%3ATest">
     <img src="https://img.shields.io/github/workflow/status/gofiber/fiber/Test?label=%F0%9F%A7%AA%20tests&style=flat&color=75C46B">
   </a>
+  <a>
+    <img src="https://counter.gofiber.io/badge/kiyonlin/gonetx">
+  </a>
 </p>
+
 
 `gonetx` provides Golang net utils.
 
