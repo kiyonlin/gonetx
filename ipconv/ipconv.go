@@ -17,7 +17,7 @@ func (e ipv4Error) Error() string {
 // Panic if format of ip is not ipv4
 func V42Long(ip string) (long uint32) {
 	l := len(ip)
-	if l > 15 {
+	if l < 7 || l > 15 {
 		panic(ipv4Error{ip})
 	}
 	var (
