@@ -31,10 +31,20 @@ func (e ipv4Error) Error() string {
 
 // V42Long converts an ipv4 string to an uint32 integer.
 // Panic if format of ip is not ipv4
-func V42Long(ip string) (long uint32) {
+func V42Long(ip string) uint32 {
+	if long, err := SafeV42Long(ip); err != nil {
+		panic(err)
+	} else {
+		return long
+	}
+}
+
+// SafeV42Long converts an ipv4 string to an uint32 integer.
+// An error returns if format of ip is not ipv4
+func SafeV42Long(ip string) (long uint32, err error) {
 	l := len(ip)
 	if l < 7 || l > 15 {
-		panic(ipv4Error{ip})
+		return 0, ipv4Error{ip}
 	}
 	var (
 		n uint32
@@ -45,21 +55,21 @@ func V42Long(ip string) (long uint32) {
 		switch {
 		case c == '.':
 			if b <= 0 {
-				panic(ipv4Error{ip})
+				return 0, ipv4Error{ip}
 			}
 			long |= n << b
 			n, b = 0, b-8
 		case c >= '0' && c <= '9':
 			n = n*10 + uint32(c-'0')
 			if n > 255 {
-				panic(ipv4Error{ip})
+				return 0, ipv4Error{ip}
 			}
 		default:
-			panic(ipv4Error{ip})
+			return 0, ipv4Error{ip}
 		}
 	}
 
-	return long | n
+	return long | n, nil
 }
 
 // Long2V4 convert an uint32 integer to ipv4 string
