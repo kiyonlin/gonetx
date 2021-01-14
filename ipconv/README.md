@@ -1,3 +1,5 @@
+This project is archived, please move to [gonetx/ipconv](https://github.com/gonetx/ipconv).
+
 # Benchmark
 Here is the benchmark with `2.4 GHz 8-Core Intel Core i9`:
 ```hs
