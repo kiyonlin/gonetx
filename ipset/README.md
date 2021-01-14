@@ -1,3 +1,5 @@
+This project is archived, please move to [gonetx/ipset](https://github.com/gonetx/ipset).
+
 # gonetx/ipset
 <p align="center">
   <a href="https://pkg.go.dev/github.com/kiyonlin/gonetx/ipset?tab=doc">
