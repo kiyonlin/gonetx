@@ -1,3 +1,5 @@
+This project is archived, please move to [gonetx](https://github.com/gonetx).
+
 # gonetx
 <p>
   <a href="https://pkg.go.dev/github.com/kiyonlin/gonetx/?tab=doc">
